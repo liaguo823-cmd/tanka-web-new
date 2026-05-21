@@ -1,0 +1,9 @@
+1:"$Sreact.fragment"
+2:I[10795,["/tanka-web-new/_next/static/chunks/03pt573d~9ljw.js"],"ClientPageRoot"]
+3:I[91510,["/tanka-web-new/_next/static/chunks/03pt573d~9ljw.js","/tanka-web-new/_next/static/chunks/0.f8mg8zi~bnf.js"],"default"]
+6:I[28835,["/tanka-web-new/_next/static/chunks/03pt573d~9ljw.js"],"OutletBoundary"]
+7:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"Component":"$3","serverProvidedParams":{"searchParams":{},"params":{},"promises":["$@4","$@5"]}}],[["$","script","script-0",{"src":"/tanka-web-new/_next/static/chunks/0.f8mg8zi~bnf.js","async":true}]],["$","$L6",null,{"children":["$","$7",null,{"name":"Next.MetadataOutlet","children":"$@8"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"NDVlmIUf-D6Owq9nbOD2j"}
+4:{}
+5:"$0:rsc:props:children:0:props:serverProvidedParams:params"
+8:null
