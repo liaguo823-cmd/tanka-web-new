@@ -32,19 +32,26 @@ import {
   ChevronsUpDown,
   Circle,
   Copy,
+  CreditCard,
   Download,
   FileText,
+  Filter,
   Flag,
   Folder,
   FolderPlus,
+  Home as HomeIcon,
+  Share2,
+  Trash2,
   Image as ImageIcon,
   LayoutGrid,
   Link2,
   ListFilter,
+  LogOut,
   Maximize2,
   Megaphone,
   MessageSquare,
   Mic,
+  Moon,
   MoreVertical,
   PanelLeftClose,
   PanelLeftOpen,
@@ -56,6 +63,8 @@ import {
   Search,
   Settings,
   Sparkles,
+  Sun,
+  ArrowDown,
   ArrowRight,
   ArrowUp,
   ThumbsDown,
@@ -166,6 +175,16 @@ function startColumnResize(
   document.body.style.userSelect = "none";
 }
 
+// Shared 5-state color system: Done / Active / Alert / New / Idle
+type StatusKey = "done" | "active" | "alert" | "new" | "idle";
+const STATUS: Record<StatusKey, { dot: string; label: string; tint: string }> = {
+  done:   { dot: "#3a8a5e", label: "#2e6f4b", tint: "#e6f1ea" },
+  active: { dot: "#c47e1a", label: "#8e5b10", tint: "#faf0d8" },
+  alert:  { dot: "#c44a3a", label: "#9e3a2d", tint: "#f6e1dc" },
+  new:    { dot: "#2563b8", label: "#1d4a8a", tint: "#dde7f6" },
+  idle:   { dot: "#827d73", label: "#5e574e", tint: "#efefea" },
+};
+
 export default function Home() {
   const [activeWorkspace, setActiveWorkspace] = useState("t");
   const [activeNav, setActiveNav] = useState<NavKey>("flow");
@@ -174,6 +193,7 @@ export default function Home() {
   const [listWidth, setListWidth] = useState(LIST_DEFAULT);
   const navCollapsed = navWidth < NAV_COLLAPSE_THRESHOLD;
   const listCollapsed = listWidth < LIST_COLLAPSE_THRESHOLD;
+  const [theme, setTheme] = useState<Theme>("light");
   const [aiAssistantOpen, setAiAssistantOpen] = useState(true);
   const [membersPanelOpen, setMembersPanelOpen] = useState(false);
   const [filter, setFilter] = useState<FilterKey>("all");
@@ -324,6 +344,8 @@ export default function Home() {
             max: NAV_MAX,
           })
         }
+        theme={theme}
+        onThemeChange={setTheme}
       />
       {hasListColumn(activeNav) && (
         <ListColumn
@@ -362,15 +384,15 @@ export default function Home() {
         {activeNav === "link" ? (
           <LinkPage />
         ) : activeNav === "memos" ? (
-          <PlaceholderPage title="Memos" subtitle="Notes you save from chats and flows" />
+          <MemosPage />
         ) : activeNav === "followups" ? (
-          <PlaceholderPage title="Follow-ups" subtitle="Things you tracked for later" />
+          <FollowUpsPage />
         ) : activeNav === "votes" ? (
-          <PlaceholderPage title="Votes" subtitle="Team decisions and quick polls" />
+          <VotesPage />
         ) : activeNav === "calendar" ? (
           <CalendarPage />
         ) : activeNav === "sop" ? (
-          <PlaceholderPage title="SOP library" subtitle="Reusable procedures captured from flows" />
+          <SopsPage />
         ) : activeNav === "agent" ? (
           <AgentPage />
         ) : activeNav === "chat" ? (
@@ -697,7 +719,7 @@ function NavRow({
       <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none">
         {showBadge && (
           <span className="shrink-0 min-w-[16px] h-4 px-1 rounded-full bg-warm-black text-white text-[10px] font-medium flex items-center justify-center tabular-nums leading-none pointer-events-auto">
-            {badgeCount! > 9 ? "9+" : badgeCount}
+            {badgeCount}
           </span>
         )}
         {createMenu && (
@@ -723,6 +745,188 @@ function NavRow({
 }
 
 /* ===========================
+ * User menu (YG avatar) — popover with profile / plan / theme / sign out
+ * =========================== */
+
+type Theme = "light" | "dark";
+
+function UserMenuButton({
+  collapsed = false,
+  theme,
+  onThemeChange,
+}: {
+  collapsed?: boolean;
+  theme: Theme;
+  onThemeChange: (t: Theme) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [pos, setPos] = useState<{ left: number; bottom: number } | null>(null);
+
+  const onOpen = () => {
+    const r = triggerRef.current?.getBoundingClientRect();
+    if (!r) return;
+    setPos({ left: r.left, bottom: window.innerHeight - r.top + 8 });
+    setOpen(true);
+  };
+
+  return (
+    <>
+      <button
+        ref={triggerRef}
+        onClick={onOpen}
+        title="yiran guo"
+        className={
+          collapsed
+            ? "rounded-full hover:opacity-90 transition-opacity"
+            : "flex-1 min-w-0 h-9 flex items-center px-1 hover:opacity-90 transition-opacity"
+        }
+      >
+        <span className="w-8 h-8 rounded-full bg-[#827d73] text-white text-[12px] font-bold flex items-center justify-center shrink-0">
+          YG
+        </span>
+      </button>
+      {open && pos && (
+        <UserMenuPopover
+          left={pos.left}
+          bottom={pos.bottom}
+          theme={theme}
+          onThemeChange={onThemeChange}
+          onClose={() => setOpen(false)}
+        />
+      )}
+    </>
+  );
+}
+
+function UserMenuPopover({
+  left,
+  bottom,
+  theme,
+  onThemeChange,
+  onClose,
+}: {
+  left: number;
+  bottom: number;
+  theme: Theme;
+  onThemeChange: (t: Theme) => void;
+  onClose: () => void;
+}) {
+  if (typeof document === "undefined") return null;
+  return createPortal(
+    <>
+      <div className="fixed inset-0 z-[100]" onClick={onClose} />
+      <div
+        role="menu"
+        style={{ left, bottom }}
+        className="fixed z-[101] w-[320px] rounded-2xl bg-white border border-warm-gray-2 shadow-[0_12px_32px_rgba(38,32,28,0.12)] overflow-hidden"
+      >
+        <div className="px-4 pt-4 pb-3">
+          <div className="flex items-center gap-3">
+            <span className="w-11 h-11 rounded-full bg-[#827d73] text-white text-[14px] font-bold flex items-center justify-center shrink-0">
+              YG
+            </span>
+            <div className="min-w-0">
+              <p className="text-[15px] font-semibold text-warm-black truncate">yiran guo</p>
+              <p className="text-[13px] text-warm-2 truncate">yiran.guo@tanka.ai</p>
+            </div>
+          </div>
+          <button className="mt-3 w-full h-10 rounded-lg border border-warm-gray-2 text-[14px] font-medium text-warm-black hover:bg-warm-base flex items-center justify-center gap-1.5 transition-colors">
+            View Profile
+            <ArrowRight className="w-4 h-4" strokeWidth={1.8} />
+          </button>
+        </div>
+
+        <div className="border-t border-warm-gray-2 mx-4" />
+
+        <div className="px-4 py-3">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-warm-2 mb-2">
+            Current Plan
+          </p>
+          <div className="rounded-lg bg-warm-base p-3 flex items-center gap-3">
+            <span
+              className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+              style={{ background: STATUS.done.dot }}
+            >
+              <Zap className="w-[18px] h-[18px] text-white" strokeWidth={2} fill="white" />
+            </span>
+            <div className="flex-1 min-w-0">
+              <p className="text-[14px] font-semibold text-warm-black">Pro Plan</p>
+              <p className="text-[12px] text-warm-2">3 of 5 seats used</p>
+            </div>
+            <button
+              className="text-[13px] font-medium"
+              style={{ color: STATUS.done.label }}
+            >
+              Upgrade
+            </button>
+          </div>
+        </div>
+
+        <div className="border-t border-warm-gray-2 mx-4" />
+
+        <div className="py-1.5">
+          <button
+            onClick={onClose}
+            className="w-full px-4 py-2 flex items-center gap-3 text-[14px] text-warm-black hover:bg-warm-base"
+          >
+            <CreditCard className="w-[18px] h-[18px] text-warm-2" strokeWidth={1.8} />
+            Billing
+          </button>
+          <button
+            onClick={onClose}
+            className="w-full px-4 py-2 flex items-center gap-3 text-[14px] text-warm-black hover:bg-warm-base"
+          >
+            <Settings className="w-[18px] h-[18px] text-warm-2" strokeWidth={1.8} />
+            Settings
+          </button>
+          <div className="w-full px-4 py-2 flex items-center gap-3 text-[14px] text-warm-black">
+            <Sun className="w-[18px] h-[18px] text-warm-2" strokeWidth={1.8} />
+            <span className="flex-1">Appearance</span>
+            <div className="flex items-center rounded-full bg-warm-base p-0.5">
+              <button
+                onClick={() => onThemeChange("light")}
+                className={`px-2.5 py-1 rounded-full text-[12px] font-medium flex items-center gap-1 transition-colors ${
+                  theme === "light" ? "bg-white text-warm-black shadow-sm" : "text-warm-2"
+                }`}
+                title="Light"
+              >
+                <Sun className="w-3.5 h-3.5" strokeWidth={1.8} />
+                Light
+              </button>
+              <button
+                onClick={() => onThemeChange("dark")}
+                className={`px-2.5 py-1 rounded-full text-[12px] font-medium flex items-center gap-1 transition-colors ${
+                  theme === "dark" ? "bg-white text-warm-black shadow-sm" : "text-warm-2"
+                }`}
+                title="Dark"
+              >
+                <Moon className="w-3.5 h-3.5" strokeWidth={1.8} />
+                Dark
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-warm-gray-2 mx-4" />
+
+        <div className="py-1.5">
+          <button
+            onClick={onClose}
+            className="w-full px-4 py-2 flex items-center gap-3 text-[14px] hover:bg-warm-base"
+            style={{ color: STATUS.alert.label }}
+          >
+            <LogOut className="w-[18px] h-[18px]" strokeWidth={1.8} />
+            Sign out
+          </button>
+        </div>
+      </div>
+    </>,
+    document.body,
+  );
+}
+
+/* ===========================
  * Nav sidebar (180px)
  * =========================== */
 function NavSidebar({
@@ -735,6 +939,8 @@ function NavSidebar({
   collapsed,
   onToggleCollapsed,
   onResize,
+  theme,
+  onThemeChange,
 }: {
   active: NavKey;
   onSelect: (k: NavKey) => void;
@@ -745,6 +951,8 @@ function NavSidebar({
   collapsed: boolean;
   onToggleCollapsed: () => void;
   onResize: (e: React.MouseEvent) => void;
+  theme: Theme;
+  onThemeChange: (t: Theme) => void;
 }) {
   // Unread badge counts for nav items
   const chatUnread = chatItems.reduce(
@@ -766,6 +974,8 @@ function NavSidebar({
         onExpand={onToggleCollapsed}
         onToggleOrgRail={onToggleOrgRail}
         onResize={onResize}
+        theme={theme}
+        onThemeChange={onThemeChange}
       />
     );
 
@@ -789,11 +999,11 @@ function NavSidebar({
             <img
               src={workspace.avatar}
               alt={workspace.name}
-              className="w-7 h-7 rounded-lg object-cover shrink-0"
+              className="w-6 h-6 rounded-md object-cover shrink-0"
             />
           ) : (
             <span
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold shrink-0"
+              className="w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-bold shrink-0"
               style={{
                 background: workspace.color,
                 color: workspace.textColor ?? "#fff",
@@ -861,14 +1071,7 @@ function NavSidebar({
       </nav>
 
       <div className="h-[60px] flex items-center gap-1 px-2">
-        <button
-          title="yiran guo"
-          className="flex-1 min-w-0 h-9 flex items-center px-1 transition-colors"
-        >
-          <span className="w-8 h-8 rounded-full bg-[#827d73] text-white text-[12px] font-bold flex items-center justify-center shrink-0">
-            YG
-          </span>
-        </button>
+        <UserMenuButton theme={theme} onThemeChange={onThemeChange} />
         <button
           onClick={onToggleCollapsed}
           title="Hide navigation"
@@ -893,6 +1096,8 @@ function NavSidebarCollapsed({
   onExpand,
   onToggleOrgRail,
   onResize,
+  theme,
+  onThemeChange,
 }: {
   active: NavKey;
   onSelect: (k: NavKey) => void;
@@ -900,22 +1105,25 @@ function NavSidebarCollapsed({
   onExpand: () => void;
   onToggleOrgRail: () => void;
   onResize: (e: React.MouseEvent) => void;
+  theme: Theme;
+  onThemeChange: (t: Theme) => void;
 }) {
-  const flat: { id: NavKey; label: string; icon: LucideIcon }[] = [];
-  for (const g of navGroups) {
+  const groupedFlat: { id: NavKey; label: string; icon: LucideIcon }[][] = navGroups.map((g) => {
+    const arr: { id: NavKey; label: string; icon: LucideIcon }[] = [];
     for (const it of g.items) {
-      flat.push({ id: it.id as NavKey, label: it.label, icon: iconMap[it.icon] ?? LayoutGrid });
+      arr.push({ id: it.id as NavKey, label: it.label, icon: iconMap[it.icon] ?? LayoutGrid });
       if (it.children) {
         for (const c of it.children) {
-          flat.push({ id: c.id as NavKey, label: c.label, icon: iconMap[c.icon] ?? Box });
+          arr.push({ id: c.id as NavKey, label: c.label, icon: iconMap[c.icon] ?? Box });
         }
       }
     }
-  }
+    return arr;
+  });
 
   return (
     <aside className="group/navside relative w-12 shrink-0 bg-warm-bg border-r border-warm-gray-2 flex flex-col h-screen items-center">
-      <div className="h-[60px] flex items-center justify-center">
+      <div className="h-[60px] flex items-center justify-center w-full">
         <button
           onClick={onToggleOrgRail}
           title={`Toggle organizations (${workspace.name})`}
@@ -944,27 +1152,37 @@ function NavSidebarCollapsed({
           )}
         </button>
       </div>
+      <div className="border-t border-warm-gray-2 w-full" />
       <nav className="flex-1 overflow-y-auto pt-3.5 scrollbar-thin w-full">
-        <ul className="space-y-0 flex flex-col items-center">
-          {flat.map((it) => {
-            const isActive = it.id === active;
-            return (
-              <li key={it.id}>
-                <button
-                  onClick={() => onSelect(it.id)}
-                  title={it.label}
-                  className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${
-                    isActive
-                      ? "bg-warm-gray-2 text-warm-black"
-                      : "text-warm-2 hover:text-warm-black hover:bg-warm-gray-2/60"
-                  }`}
-                >
-                  <it.icon className="w-[18px] h-[18px]" strokeWidth={1.6} />
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+        {groupedFlat.map((group, gi) => (
+          <div key={gi}>
+            {gi > 0 && <div className="border-t border-warm-gray-2 mx-2 my-3.5" />}
+            <ul className="space-y-0 flex flex-col items-center">
+              {group.map((it) => {
+                const isActive = it.id === active;
+                return (
+                  <li key={it.id}>
+                    <button
+                      onClick={() => onSelect(it.id)}
+                      title={it.label}
+                      className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${
+                        isActive
+                          ? "bg-warm-gray-2"
+                          : "hover:bg-warm-gray-2/60"
+                      }`}
+                    >
+                      <it.icon
+                        className="w-[18px] h-[18px]"
+                        style={{ color: isActive ? "#26201c" : "#56534E" }}
+                        strokeWidth={1.6}
+                      />
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </nav>
       <div className="pb-2 flex items-center justify-center">
         <button
@@ -976,9 +1194,7 @@ function NavSidebarCollapsed({
         </button>
       </div>
       <div className="h-[60px] w-full flex items-center justify-center">
-        <span className="w-8 h-8 rounded-full bg-[#827d73] text-white text-[12px] font-bold flex items-center justify-center shrink-0">
-          YG
-        </span>
+        <UserMenuButton collapsed theme={theme} onThemeChange={onThemeChange} />
       </div>
       <div
         onMouseDown={onResize}
@@ -1733,6 +1949,16 @@ function ConversationView({
         {chatFades.fades.bottom && (
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-warm-bg-2 to-transparent z-10" />
         )}
+        {/* Scroll-to-bottom floating button */}
+        {chatFades.fades.bottom && (
+          <button
+            onClick={() => bottomRef.current?.scrollIntoView({ behavior: "smooth" })}
+            title="Jump to latest"
+            className="absolute left-1/2 -translate-x-1/2 bottom-4 z-20 w-8 h-8 rounded-full bg-white border border-warm-gray-2 shadow-[0_2px_8px_rgba(38,32,28,0.08)] text-warm-2 hover:text-warm-black hover:border-warm-border flex items-center justify-center transition-colors"
+          >
+            <ArrowDown className="w-4 h-4" strokeWidth={1.8} />
+          </button>
+        )}
         <div
           ref={chatFades.ref}
           onScroll={chatFades.onScroll}
@@ -1793,9 +2019,7 @@ function ConversationView({
             </div>
             <div className="flex items-center justify-between mt-2 h-8">
               <div className="flex items-center gap-1 text-warm-2">
-                <IconBtn title="Attach">
-                  <Paperclip className="w-4 h-4" strokeWidth={1.8} />
-                </IconBtn>
+                <ChatComposerAiBtn />
                 <IconBtn title="Image">
                   <ImageIcon className="w-4 h-4" strokeWidth={1.8} />
                 </IconBtn>
@@ -2180,6 +2404,60 @@ function IconBtn({ children, title }: { children: ReactNode; title: string }) {
   );
 }
 
+// Tanka AI composer button — chat bubble with sparkle, rendered as a 30x30 SVG
+// with a subtle off-white gradient body, light warm-gray border and gradient
+// icon stroke. Used as the leftmost button in the chat composer.
+function ChatComposerAiBtn({ onClick }: { onClick?: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title="Tanka AI"
+      className="w-[30px] h-[30px] shrink-0 rounded-lg flex items-center justify-center hover:brightness-95 hover:shadow-[0_1px_4px_rgba(38,32,28,0.06)] transition-all"
+    >
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <mask id="ai-btn-mask" fill="white">
+          <path d="M0 8.00001C0 3.58173 3.58172 0 8 0H21.6C26.0183 0 29.6 3.58172 29.6 8V21.6C29.6 26.0183 26.0183 29.6 21.6 29.6H8C3.58172 29.6 0 26.0183 0 21.6V8.00001Z" />
+        </mask>
+        <path
+          d="M0 8.00001C0 3.58173 3.58172 0 8 0H21.6C26.0183 0 29.6 3.58172 29.6 8V21.6C29.6 26.0183 26.0183 29.6 21.6 29.6H8C3.58172 29.6 0 26.0183 0 21.6V8.00001Z"
+          fill="url(#ai-btn-bg)"
+        />
+        <path
+          d="M8 0V1H21.6V0V-1H8V0ZM29.6 8H28.6V21.6H29.6H30.6V8H29.6ZM21.6 29.6V28.6H8V29.6V30.6H21.6V29.6ZM0 21.6H1V8.00001H0H-1V21.6H0ZM8 29.6V28.6C4.13401 28.6 1 25.466 1 21.6H0H-1C-1 26.5706 3.02944 30.6 8 30.6V29.6ZM29.6 21.6H28.6C28.6 25.466 25.466 28.6 21.6 28.6V29.6V30.6C26.5706 30.6 30.6 26.5706 30.6 21.6H29.6ZM21.6 0V1C25.466 1 28.6 4.13401 28.6 8H29.6H30.6C30.6 3.02944 26.5706 -1 21.6 -1V0ZM8 0V-1C3.02944 -1 -1 3.02945 -1 8.00001H0H1C1 4.13401 4.13401 1 8 1V0Z"
+          fill="#E5E3DB"
+          mask="url(#ai-btn-mask)"
+        />
+        <g clipPath="url(#ai-btn-clip)">
+          <path
+            d="M8.22949 11.3707C8.22949 9.87804 9.43954 8.668 10.9322 8.668H14.716C15.0145 8.668 15.2565 8.91001 15.2565 9.20854C15.2565 9.50707 15.0145 9.74908 14.716 9.74908H10.9322C10.0366 9.74908 9.31058 10.4751 9.31058 11.3707V20.031L11.9901 18.0562H19.5809C20.4765 18.0562 21.2025 17.3302 21.2025 16.4346V14.614C21.2025 14.3154 21.4445 14.0734 21.743 14.0734C22.0416 14.0734 22.2836 14.3154 22.2836 14.614V16.4346C22.2836 17.9273 21.0735 19.1373 19.5809 19.1373H12.3458L8.22949 22.1699V11.3707Z"
+            fill="url(#ai-btn-icon)"
+          />
+          <path
+            d="M19.8994 7.58691C19.8994 8.20462 20.2213 8.87147 20.7362 9.39111C21.2506 9.91033 21.9169 10.2413 22.5538 10.2414V10.8784C21.9169 10.8785 21.2506 11.2095 20.7362 11.7287C20.2213 12.2483 19.8994 12.9152 19.8994 13.5329H19.2623C19.2623 12.9152 18.9404 12.2483 18.4256 11.7287C17.9111 11.2095 17.2448 10.8784 16.6079 10.8784V10.2414C17.2448 10.2414 17.9111 9.91033 18.4256 9.39111C18.9404 8.87147 19.2623 8.20463 19.2623 7.58691H19.8994Z"
+            fill="url(#ai-btn-icon)"
+          />
+        </g>
+        <defs>
+          <linearGradient id="ai-btn-bg" x1="14.8" y1="0" x2="14.8" y2="29.6" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#FCFCFA" />
+            <stop offset="0.333333" stopColor="#FAF9F7" />
+            <stop offset="0.666667" stopColor="#F7F7F3" />
+            <stop offset="1" stopColor="#F5F4F0" />
+          </linearGradient>
+          <linearGradient id="ai-btn-icon" x1="15.3917" y1="7.58691" x2="15.3917" y2="22.1699" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#71717B" />
+            <stop offset="1" stopColor="#E4E4E7" />
+          </linearGradient>
+          <clipPath id="ai-btn-clip">
+            <rect width="16" height="16" fill="white" transform="translate(6.7998 6.7998)" />
+          </clipPath>
+        </defs>
+      </svg>
+    </button>
+  );
+}
+
 function ComposerOutlineBtn({
   children,
   title,
@@ -2214,7 +2492,7 @@ function SendBtn({
       title="Send"
       className={`w-[30px] h-[30px] rounded-lg border flex items-center justify-center transition-colors ${
         disabled
-          ? "bg-warm-border border-warm-2 text-white cursor-not-allowed"
+          ? "bg-warm-border border-warm-border text-white cursor-not-allowed"
           : "bg-warm-black border-warm-black text-white hover:bg-warm-black/85"
       }`}
     >
@@ -2436,7 +2714,7 @@ const FOLLOWUP_ITEMS: FollowUpItem[] = [
     id: "fu-1",
     title: "准备周会同步近期重点工作和后续需求",
     source: { type: "group", name: "Design Team", color: "#7c6fb8", emoji: "🪐" },
-    accent: "#5b5fd6",
+    accent: "#2563b8",
     group: "Today",
   },
   {
@@ -2448,13 +2726,13 @@ const FOLLOWUP_ITEMS: FollowUpItem[] = [
       avatarUrl:
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&q=80",
     },
-    accent: "#5b5fd6",
+    accent: "#2563b8",
     group: "Yesterday",
   },
   {
     id: "fu-3",
     title: "111",
-    accent: "#5b5fd6",
+    accent: "#2563b8",
     group: "Yesterday",
   },
   {
@@ -2466,7 +2744,7 @@ const FOLLOWUP_ITEMS: FollowUpItem[] = [
       avatarUrl:
         "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&q=80",
     },
-    accent: "#dc2626",
+    accent: "#c44a3a",
     unread: true,
     group: "Yesterday",
   },
@@ -2474,14 +2752,14 @@ const FOLLOWUP_ITEMS: FollowUpItem[] = [
     id: "fu-5",
     title: "Ling LV: 本周新员工使用 Tanka 反馈汇总周报，请各模块负责同学重点关注 👇 https://me...",
     source: { type: "group", name: "Design Team", color: "#7c6fb8", emoji: "🪐" },
-    accent: "#dc2626",
+    accent: "#c44a3a",
     group: "04/28/2026",
   },
   {
     id: "fu-6",
     title: "复盘 Q2 上半季增长实验结果并提炼下一季假设",
     source: { type: "group", name: "Growth pod", color: "#f59e0b", emoji: "🌱" },
-    accent: "#5b5fd6",
+    accent: "#2563b8",
     group: "04/28/2026",
   },
   {
@@ -2493,26 +2771,19 @@ const FOLLOWUP_ITEMS: FollowUpItem[] = [
       avatarUrl:
         "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&q=80",
     },
-    accent: "#5b5fd6",
+    accent: "#2563b8",
     group: "04/25/2026",
   },
 ];
 
 function FollowUpsPage() {
-  const [tab, setTab] = useState<FollowUpTab>("ongoing");
-  const [scope, setScope] = useState<FollowUpScope>("byyou");
+  const [status, setStatus] = useState<"open" | "completed">("open");
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
 
-  const tabs: Array<{ id: FollowUpTab; label: string; count: number }> = [
-    { id: "ongoing", label: "Ongoing", count: 3 },
-    { id: "verified", label: "Verified", count: 1 },
-    { id: "expired", label: "Expired", count: 1 },
-  ];
-  const scopes: Array<{ id: FollowUpScope; label: string; count: number }> = [
-    { id: "byyou", label: "By you", count: 3 },
-    { id: "byothers", label: "By others", count: 0 },
-    { id: "initiated", label: "Initiated by you", count: 0 },
+  const statusChips: Array<{ id: "open" | "completed"; label: string; count: number }> = [
+    { id: "open", label: "Open", count: 10 },
+    { id: "completed", label: "Completed", count: 22 },
   ];
 
   const items = FOLLOWUP_ITEMS.filter((i) => {
@@ -2561,7 +2832,7 @@ function FollowUpsPage() {
                   <Search className="w-[18px] h-[18px]" strokeWidth={1.8} />
                 </button>
               )}
-              <button className="h-9 px-4 inline-flex items-center gap-1.5 rounded-full bg-warm-black text-white text-[13px] font-medium hover:bg-warm-black/90">
+              <button className="h-9 px-4 inline-flex items-center gap-1.5 rounded-lg bg-warm-black text-white text-[13px] font-medium hover:bg-warm-black/90">
                 <Plus className="w-3.5 h-3.5" strokeWidth={2} />
                 New Follow-up
               </button>
@@ -2571,42 +2842,32 @@ function FollowUpsPage() {
             Track action items captured from chats, meetings, and docs.
           </p>
 
-          <div className="border-b border-warm-gray-2 flex gap-6 mb-3">
-            {tabs.map((t) => (
-              <button
-                key={t.id}
-                onClick={() => setTab(t.id)}
-                className={`relative py-2.5 text-[14px] transition-colors ${
-                  tab === t.id
-                    ? "text-warm-black font-semibold"
-                    : "text-warm-2 hover:text-warm-black"
-                }`}
-              >
-                {t.label} ({t.count})
-                {tab === t.id && (
-                  <span className="absolute left-0 right-0 -bottom-px h-[2px] bg-warm-black" />
-                )}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-3 text-[13px]">
-              {scopes.map((s, i) => (
-                <span key={s.id} className="flex items-center gap-3">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-1">
+              {statusChips.map((c) => {
+                const isActive = status === c.id;
+                return (
                   <button
-                    onClick={() => setScope(s.id)}
-                    className={`transition-colors ${
-                      scope === s.id ? "text-warm-black font-medium" : "text-warm-2 hover:text-warm-black"
+                    key={c.id}
+                    onClick={() => setStatus(c.id)}
+                    className={`shrink-0 px-2.5 py-[5px] rounded-full text-[12px] font-medium transition-colors ${
+                      isActive
+                        ? "bg-warm-base text-warm-black"
+                        : "text-warm-2 hover:bg-warm-base/60"
                     }`}
                   >
-                    {s.label} ({s.count})
+                    {c.label} ({c.count})
                   </button>
-                  {i < scopes.length - 1 && (
-                    <span className="text-warm-gray-2">|</span>
-                  )}
-                </span>
-              ))}
+                );
+              })}
+              <button className="shrink-0 px-2.5 py-[5px] rounded-full text-[12px] font-medium text-warm-2 hover:bg-warm-base/60 inline-flex items-center gap-1">
+                Priority
+                <ChevronDown className="w-3 h-3" strokeWidth={1.8} />
+              </button>
+              <button className="shrink-0 px-2.5 py-[5px] rounded-full text-[12px] font-medium text-warm-2 hover:bg-warm-base/60 inline-flex items-center gap-1">
+                Categorize
+                <ChevronDown className="w-3 h-3" strokeWidth={1.8} />
+              </button>
             </div>
             <button className="flex items-center gap-1.5 text-[13px] text-warm-2 hover:text-warm-black">
               <ListTodo className="w-3.5 h-3.5" strokeWidth={1.8} />
@@ -2641,7 +2902,12 @@ function FollowUpsPage() {
 
 function FollowUpRow({ item }: { item: FollowUpItem }) {
   return (
-    <div className="relative rounded-xl border border-warm-gray-2 bg-white px-4 py-3 flex items-start gap-3 hover:border-warm-border hover:shadow-[0_2px_12px_rgba(38,32,28,0.06)] transition">
+    <div className="relative rounded-xl border border-warm-gray-2 bg-white pl-5 pr-4 py-3 flex items-start gap-3 hover:border-warm-border hover:shadow-[0_2px_12px_rgba(38,32,28,0.06)] transition">
+      <span
+        aria-hidden
+        className="absolute left-2 top-1/2 -translate-y-1/2 w-[3px] h-[60%] rounded-full"
+        style={{ background: item.accent }}
+      />
       <div className="flex-1 min-w-0">
         <p className="text-[14px] text-warm-black leading-relaxed truncate">
           {item.title}
@@ -2680,11 +2946,697 @@ function FollowUpRow({ item }: { item: FollowUpItem }) {
         >
           <MoreVertical className="w-3.5 h-3.5" strokeWidth={1.8} />
         </button>
-        {item.unread && (
-          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-warm-black" />
-        )}
       </div>
     </div>
+  );
+}
+
+/* ===========================
+ * Votes page
+ * =========================== */
+
+type VoteTab = "ongoing" | "verified" | "expired";
+type VoteScope = "byyou" | "byothers" | "initiated";
+
+type VoteVoter = { id: string; initials: string; color: string; avatarUrl?: string };
+
+type VoteCard = {
+  id: string;
+  author: { name: string; avatarUrl: string };
+  question: string;
+  reply: string;
+  voted: { total: number; max: number };
+  voters: VoteVoter[];
+  verification: {
+    status: "Agree" | "Disagree";
+    label: string;
+    by: VoteVoter;
+  };
+  execution: {
+    label: "Done" | "In progress" | "Idle";
+    by: VoteVoter;
+  };
+  group: string; // e.g. "报销-XXX"
+  timestamp: string; // "04/29/2026 4:56 PM"
+  date: string; // grouping date
+  scope: VoteTab;
+};
+
+const VOTERS_POOL: VoteVoter[] = [
+  { id: "a", initials: "A", color: "#2563b8" },
+  { id: "ds", initials: "DS", color: "#bdbbaf", avatarUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&q=80" },
+  { id: "li", initials: "LI", color: "#10a37f" },
+  { id: "gz", initials: "GZ", color: "#3a8a5e" },
+];
+
+const VOTE_CARDS: VoteCard[] = [
+  {
+    id: "v1",
+    author: { name: "Ling LV", avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&q=80" },
+    question: "Ling LV: Tanka iOS v3.2 终稿今天能 lock 吗?",
+    reply: "Yiran GUO: 我再确认下 dark mode 截图",
+    voted: { total: 5, max: 5 },
+    voters: VOTERS_POOL,
+    verification: {
+      status: "Agree",
+      label: "Let's move forward",
+      by: { id: "lv", initials: "LV", color: "#bdbbaf", avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&q=80" },
+    },
+    execution: { label: "Done", by: { id: "yl", initials: "YL", color: STATUS.done.dot } },
+    group: "报销-XXX",
+    timestamp: "04/29/2026 4:56 PM",
+    date: "04/29/2026",
+    scope: "ongoing",
+  },
+  {
+    id: "v2",
+    author: { name: "Xinran LI", avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&q=80" },
+    question: "Xinran LI: F12 sub nav 这版交互稿，能交叉 review 一下吗?",
+    reply: "Yiran GUO: 好的，今晚给你回",
+    voted: { total: 5, max: 5 },
+    voters: VOTERS_POOL,
+    verification: {
+      status: "Agree",
+      label: "Let's move forward",
+      by: { id: "xl", initials: "XL", color: "#bdbbaf", avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&q=80" },
+    },
+    execution: { label: "Done", by: { id: "yl", initials: "YL", color: STATUS.done.dot } },
+    group: "报销-XXX",
+    timestamp: "04/29/2026 3:12 PM",
+    date: "04/29/2026",
+    scope: "ongoing",
+  },
+  {
+    id: "v3",
+    author: { name: "Yichun HAN", avatarUrl: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=80&h=80&fit=crop&q=80" },
+    question: "Yichun HAN: 新版 onboarding 流程图周三下午能 sync 吗?",
+    reply: "Yiran GUO: 周三 4 点没问题",
+    voted: { total: 5, max: 5 },
+    voters: VOTERS_POOL,
+    verification: {
+      status: "Agree",
+      label: "Let's move forward",
+      by: { id: "yh", initials: "YH", color: "#bdbbaf", avatarUrl: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=80&h=80&fit=crop&q=80" },
+    },
+    execution: { label: "Done", by: { id: "yl", initials: "YL", color: STATUS.done.dot } },
+    group: "报销-XXX",
+    timestamp: "04/29/2026 11:48 AM",
+    date: "04/29/2026",
+    scope: "ongoing",
+  },
+  {
+    id: "v4",
+    author: { name: "Adam Liu", avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&q=80" },
+    question: "Adam Liu: Q1 OKR review 周五上午十点定下来吗?",
+    reply: "Yiran GUO: 周五上午十点 OK",
+    voted: { total: 4, max: 4 },
+    voters: VOTERS_POOL.slice(0, 4),
+    verification: {
+      status: "Agree",
+      label: "Verified",
+      by: { id: "al", initials: "AL", color: "#bdbbaf", avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&q=80" },
+    },
+    execution: { label: "Done", by: { id: "yl", initials: "YL", color: STATUS.done.dot } },
+    group: "Roadmap-Q2",
+    timestamp: "04/27/2026 5:31 PM",
+    date: "04/27/2026",
+    scope: "verified",
+  },
+  {
+    id: "v5",
+    author: { name: "Hua Zhang", avatarUrl: "https://images.unsplash.com/photo-1509909756405-be0199881695?w=80&h=80&fit=crop&q=80" },
+    question: "Hua Zhang: 监控告警上线时间窗口需要再 confirm 一次吗?",
+    reply: "Yiran GUO: 时间窗口已过期，重新发起一票",
+    voted: { total: 2, max: 5 },
+    voters: VOTERS_POOL.slice(0, 2),
+    verification: {
+      status: "Disagree",
+      label: "Time-out — needs re-vote",
+      by: { id: "hz", initials: "HZ", color: "#bdbbaf", avatarUrl: "https://images.unsplash.com/photo-1509909756405-be0199881695?w=80&h=80&fit=crop&q=80" },
+    },
+    execution: { label: "Idle", by: { id: "yl", initials: "YL", color: STATUS.idle.dot } },
+    group: "Ops-monitor",
+    timestamp: "04/20/2026 9:02 AM",
+    date: "04/20/2026",
+    scope: "expired",
+  },
+];
+
+function VotesPage() {
+  const [tab, setTab] = useState<VoteTab>("ongoing");
+  const [scope, setScope] = useState<VoteScope>("byyou");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState("");
+
+  const tabs: Array<{ id: VoteTab; label: string; count: number }> = [
+    { id: "ongoing", label: "Ongoing", count: 3 },
+    { id: "verified", label: "Verified", count: 1 },
+    { id: "expired", label: "Expired", count: 1 },
+  ];
+  const scopes: Array<{ id: VoteScope; label: string; count: number }> = [
+    { id: "byyou", label: "By you", count: 3 },
+    { id: "byothers", label: "By others", count: 0 },
+    { id: "initiated", label: "Initiated by you", count: 0 },
+  ];
+
+  const items = VOTE_CARDS.filter((v) => {
+    if (v.scope !== tab) return false;
+    if (!query.trim()) return true;
+    return (v.question + v.reply).toLowerCase().includes(query.trim().toLowerCase());
+  });
+
+  const grouped: Array<{ date: string; rows: VoteCard[] }> = [];
+  for (const v of items) {
+    const last = grouped[grouped.length - 1];
+    if (last && last.date === v.date) last.rows.push(v);
+    else grouped.push({ date: v.date, rows: [v] });
+  }
+
+  return (
+    <div className="h-screen w-full flex flex-col bg-warm-bg-2 overflow-hidden">
+      <div className="h-[60px] shrink-0" />
+
+      <div className="shrink-0">
+        <div className="max-w-[1080px] mx-auto px-10">
+          <div className="flex items-start justify-between mb-1">
+            <h1 className="text-[28px] font-bold tracking-tight">Votes</h1>
+            <div className="flex items-center gap-2 mt-1">
+              {searchOpen ? (
+                <div className="h-9 w-[240px] rounded-lg border border-warm-gray-2 px-3 flex items-center gap-2 bg-white">
+                  <Search className="w-[15px] h-[15px] text-warm-2" strokeWidth={1.8} />
+                  <input
+                    autoFocus
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onBlur={() => !query && setSearchOpen(false)}
+                    placeholder="Search votes..."
+                    className="bg-transparent text-[13px] outline-none flex-1 placeholder:text-warm-2"
+                  />
+                </div>
+              ) : (
+                <button
+                  onClick={() => setSearchOpen(true)}
+                  className="w-8 h-8 rounded-md flex items-center justify-center text-warm-2 hover:text-warm-black hover:bg-warm-base"
+                  title="Search"
+                >
+                  <Search className="w-[18px] h-[18px]" strokeWidth={1.8} />
+                </button>
+              )}
+              <button className="h-9 px-4 inline-flex items-center gap-1.5 rounded-lg border border-warm-gray-2 bg-white text-[13px] font-medium text-warm-black hover:bg-warm-base">
+                <Download className="w-3.5 h-3.5" strokeWidth={1.8} />
+                Export
+              </button>
+              <button className="h-9 px-4 inline-flex items-center gap-1.5 rounded-lg bg-warm-black text-white text-[13px] font-medium hover:bg-warm-black/90">
+                <Plus className="w-3.5 h-3.5" strokeWidth={2} />
+                New Vote
+              </button>
+            </div>
+          </div>
+          <p className="text-[13px] text-warm-2 mb-5">
+            Approve and verify decisions with quick polls.
+          </p>
+
+          <div className="border-b border-warm-gray-2 flex gap-6 mb-3">
+            {tabs.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className={`relative py-2.5 text-[14px] transition-colors ${
+                  tab === t.id ? "text-warm-black font-semibold" : "text-warm-2 hover:text-warm-black"
+                }`}
+              >
+                {t.label}{" "}
+                <span className={tab === t.id ? "text-warm-2 font-normal" : ""}>({t.count})</span>
+                {tab === t.id && (
+                  <span className="absolute left-0 right-0 -bottom-px h-[2px] bg-warm-black" />
+                )}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-1 mb-3">
+            {scopes.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => setScope(s.id)}
+                className={`shrink-0 px-2.5 py-[5px] rounded-full text-[12px] font-medium transition-colors ${
+                  scope === s.id
+                    ? "bg-warm-base text-warm-black"
+                    : "text-warm-2 hover:bg-warm-base/60"
+                }`}
+              >
+                {s.label} ({s.count})
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
+        <div className="max-w-[1080px] mx-auto px-10 pb-10">
+          {grouped.length > 0 ? (
+            grouped.map((g) => (
+              <div key={g.date} className="mb-6">
+                <p className="text-[12px] text-warm-2 mb-3">{g.date}</p>
+                <div className="grid grid-cols-3 gap-3">
+                  {g.rows.map((v) => (
+                    <VoteCardView key={v.id} vote={v} />
+                  ))}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center text-warm-2 text-[13px] py-20">No votes here yet.</div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function VoteAvatar({ voter, size = 22 }: { voter: VoteVoter; size?: number }) {
+  if (voter.avatarUrl) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={voter.avatarUrl}
+        alt={voter.initials}
+        style={{ width: size, height: size }}
+        className="rounded-full object-cover ring-2 ring-white shrink-0"
+      />
+    );
+  }
+  return (
+    <span
+      className="rounded-full ring-2 ring-white flex items-center justify-center text-white text-[10px] font-semibold shrink-0"
+      style={{ width: size, height: size, background: voter.color }}
+    >
+      {voter.initials}
+    </span>
+  );
+}
+
+function VoteCardView({ vote }: { vote: VoteCard }) {
+  const verifyDone = vote.verification.status === "Agree";
+  const verifyStyle = verifyDone ? STATUS.done : STATUS.alert;
+  const execStyle =
+    vote.execution.label === "Done"
+      ? STATUS.done
+      : vote.execution.label === "In progress"
+      ? STATUS.active
+      : STATUS.idle;
+
+  return (
+    <div className="rounded-xl border border-warm-gray-2 bg-white p-4 flex flex-col gap-3 hover:border-warm-border hover:shadow-[0_2px_12px_rgba(38,32,28,0.06)] transition">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 min-w-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={vote.author.avatarUrl}
+            alt={vote.author.name}
+            className="w-7 h-7 rounded-full object-cover shrink-0"
+          />
+          <span className="text-[14px] font-semibold text-warm-black truncate">
+            {vote.author.name}
+          </span>
+        </div>
+        <button className="w-6 h-6 rounded-md flex items-center justify-center text-warm-2 hover:text-warm-black hover:bg-warm-base">
+          <MoreVertical className="w-3.5 h-3.5" strokeWidth={1.8} />
+        </button>
+      </div>
+
+      {/* Quoted question + reply */}
+      <div className="border-l-2 border-warm-gray-2 pl-3 text-[12.5px] leading-relaxed text-warm-2 space-y-1">
+        <p className="line-clamp-2">{vote.question}</p>
+        <p className="line-clamp-2">{vote.reply}</p>
+      </div>
+
+      {/* Voted indicator */}
+      <p className="text-[11.5px] text-warm-2 flex items-center gap-1.5">
+        <span className="w-1 h-1 rounded-full bg-warm-2" />
+        {vote.voted.total} of {vote.voted.max} voted
+      </p>
+
+      {/* Vote rows */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between">
+          <span className="text-[13px] text-warm-black flex items-center gap-2">
+            <span>👍</span>
+            <span>Upvote</span>
+          </span>
+          <div className="flex -space-x-1.5">
+            {vote.voters.map((v) => (
+              <VoteAvatar key={v.id} voter={v} size={20} />
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-[13px] text-warm-black flex items-center gap-2">
+            <span>👎</span>
+            <span>Downvote</span>
+          </span>
+        </div>
+      </div>
+
+      {/* Verification */}
+      <div>
+        <p className="text-[11.5px] text-warm-2 flex items-center gap-1.5 mb-1.5">
+          <span className="w-1 h-1 rounded-full bg-warm-2" />
+          Verification
+        </p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 min-w-0">
+            <span
+              className="px-2 py-0.5 rounded-md text-[11.5px] font-medium shrink-0"
+              style={{ background: verifyStyle.tint, color: verifyStyle.label }}
+            >
+              {vote.verification.status}
+            </span>
+            <span className="text-[12.5px] text-warm-black truncate">{vote.verification.label}</span>
+          </div>
+          <VoteAvatar voter={vote.verification.by} size={20} />
+        </div>
+      </div>
+
+      {/* Execution */}
+      <div>
+        <p className="text-[11.5px] text-warm-2 flex items-center gap-1.5 mb-1.5">
+          <span className="w-1 h-1 rounded-full bg-warm-2" />
+          Execution
+        </p>
+        <div className="flex items-center justify-between">
+          <span
+            className="px-2 py-0.5 rounded-md text-[11.5px] font-medium"
+            style={{ background: execStyle.tint, color: execStyle.label }}
+          >
+            {vote.execution.label}
+          </span>
+          <VoteAvatar voter={vote.execution.by} size={20} />
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="border-t border-warm-gray-2 pt-2.5 flex items-center justify-between text-[11.5px] text-warm-2">
+        <span className="flex items-center gap-1.5 truncate">
+          <Users className="w-3.5 h-3.5" strokeWidth={1.8} />
+          <span className="truncate">{vote.group}</span>
+        </span>
+        <span className="flex items-center gap-1.5 shrink-0">
+          <Vote className="w-3.5 h-3.5" strokeWidth={1.8} />
+          {vote.timestamp}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ===========================
+ * Memos page
+ * =========================== */
+
+type MemoSection =
+  | "home"
+  | "meeting"
+  | "shared"
+  | "collab"
+  | "wiki"
+  | "tanka"
+  | "11";
+
+type MemoTab = "created" | "recent" | "favorites";
+
+type MemoTag = { label: string; tint: string; label_color: string };
+
+type MemoItem = {
+  id: string;
+  title: string;
+  body: string;
+  date: string;
+  tags?: MemoTag[];
+};
+
+const MEMO_TAG_GREEN: MemoTag = { label: "Tag", tint: "#dde5d3", label_color: "#3a6a4e" };
+
+const MEMO_ITEMS: MemoItem[] = [
+  {
+    id: "m1",
+    title: "Test",
+    body: "testtesttesttesttesttesttest",
+    date: "05/09/2026",
+    tags: [
+      { label: "Organizational Structure", tint: "#dde5d3", label_color: "#3a6a4e" },
+      { label: "Policy & Guidance", tint: "#dde5d3", label_color: "#3a6a4e" },
+      { label: "Company Profile", tint: "#dde5d3", label_color: "#3a6a4e" },
+    ],
+  },
+  {
+    id: "m2",
+    title: "设计需求推进群聊模版",
+    body:
+      "设计需求推进群聊模版 1. 目的 规范设计需求推荐到群聊中的流程，确保需求信息清晰、推荐对象准确、后续跟进可追踪。 2. 适用范围 适用于需要将设计相关需求、任务、讨论或资源推进到指定群聊的场景。 3. 角...",
+    date: "05/09/2026",
+  },
+  {
+    id: "m3",
+    title: "设计方案阐述模版 SOP",
+    body:
+      "设计方案阐述模版 SOP 1. 目的 规范设计方案在群聊、评审或文档中的阐述方式，帮助团队快速理解设计背景、目标、思路和关键调整点，提升沟通效率与评审质量。 2. 适用范围 适用于以下场景： 在群聊中同步...",
+    date: "05/09/2026",
+  },
+];
+
+function MemosPage() {
+  const [section, setSection] = useState<MemoSection>("home");
+  const [tab, setTab] = useState<MemoTab>("created");
+  const [notebooksOpen, setNotebooksOpen] = useState(true);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState("");
+
+  const navItems: Array<{ id: MemoSection; label: string; icon: LucideIcon; count?: number }> = [
+    { id: "home", label: "Home", icon: HomeIcon },
+    { id: "meeting", label: "Meeting", icon: Mic },
+    { id: "shared", label: "Shared with You", icon: Share2, count: 158 },
+    { id: "collab", label: "Collaboration", icon: Users, count: 1 },
+    { id: "wiki", label: "Team Wiki", icon: BookOpen },
+  ];
+
+  const notebooks: Array<{ id: MemoSection; label: string; count?: number }> = [
+    { id: "tanka", label: "tanka", count: 1 },
+    { id: "11", label: "11" },
+  ];
+
+  const tabs: Array<{ id: MemoTab; label: string; count: number }> = [
+    { id: "created", label: "Created by you", count: 3 },
+    { id: "recent", label: "Recent", count: 15 },
+    { id: "favorites", label: "Favorites", count: 0 },
+  ];
+
+  const items = MEMO_ITEMS.filter((m) => {
+    if (!query.trim()) return true;
+    const q = query.trim().toLowerCase();
+    return m.title.toLowerCase().includes(q) || m.body.toLowerCase().includes(q);
+  });
+
+  return (
+    <div className="h-screen w-full flex bg-warm-bg-2">
+      {/* Sub-nav (same width as global list column: 290px) */}
+      <aside className="w-[290px] shrink-0 bg-warm-bg-2 border-r border-warm-gray-2 flex flex-col">
+        <div className="h-[18px] shrink-0" />
+        <div className="flex-1 overflow-y-auto px-3 pb-3 scrollbar-thin">
+          <ul className="space-y-0.5">
+            {navItems.map((it) => (
+              <li key={it.id}>
+                <MemoNavRow
+                  icon={it.icon}
+                  label={it.label}
+                  count={it.count}
+                  active={section === it.id}
+                  onClick={() => setSection(it.id)}
+                />
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-5">
+            <div className="group/nb px-2 mb-1 flex items-center justify-between">
+              <button
+                onClick={() => setNotebooksOpen((v) => !v)}
+                className="flex items-center gap-1 text-[12px] font-medium text-warm-2 hover:text-warm-black"
+              >
+                Notebooks
+                <ChevronDown
+                  className={`w-3 h-3 transition-transform ${notebooksOpen ? "" : "-rotate-90"}`}
+                  strokeWidth={2}
+                />
+              </button>
+              <button
+                className="w-5 h-5 rounded flex items-center justify-center text-warm-2 hover:text-warm-black hover:bg-warm-base opacity-0 group-hover/nb:opacity-100 transition-opacity"
+                title="Add notebook"
+              >
+                <Plus className="w-3 h-3" strokeWidth={2} />
+              </button>
+            </div>
+            {notebooksOpen && (
+              <ul className="space-y-0.5">
+                {notebooks.map((nb) => (
+                  <li key={nb.id}>
+                    <MemoNavRow
+                      icon={Folder}
+                      label={nb.label}
+                      count={nb.count}
+                      active={section === nb.id}
+                      onClick={() => setSection(nb.id)}
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+        <div className="border-t border-warm-gray-2 px-3 py-3 shrink-0">
+          <MemoNavRow icon={Trash2} label="Trash" />
+        </div>
+      </aside>
+
+      {/* Main */}
+      <main className="flex-1 min-w-0 flex flex-col">
+        <div className="h-[18px] shrink-0" />
+        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
+          <div className="max-w-[1080px] mx-auto px-10 pb-10">
+            <div className="h-9 flex items-center justify-between mb-1">
+              <h1 className="text-[28px] font-bold tracking-tight leading-none">Memos</h1>
+              <div className="flex items-center gap-2">
+                {searchOpen ? (
+                  <div className="h-9 w-[240px] rounded-lg border border-warm-gray-2 px-3 flex items-center gap-2 bg-white">
+                    <Search className="w-[15px] h-[15px] text-warm-2" strokeWidth={1.8} />
+                    <input
+                      autoFocus
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      onBlur={() => !query && setSearchOpen(false)}
+                      placeholder="Search memos..."
+                      className="bg-transparent text-[13px] outline-none flex-1 placeholder:text-warm-2"
+                    />
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setSearchOpen(true)}
+                    className="w-8 h-8 rounded-md flex items-center justify-center text-warm-2 hover:text-warm-black hover:bg-warm-base"
+                    title="Search"
+                  >
+                    <Search className="w-[18px] h-[18px]" strokeWidth={1.8} />
+                  </button>
+                )}
+                <button className="h-9 px-4 inline-flex items-center gap-1.5 rounded-lg bg-warm-black text-white text-[13px] font-medium hover:bg-warm-black/90">
+                  <Plus className="w-3.5 h-3.5" strokeWidth={2} />
+                  New Memo
+                </button>
+              </div>
+            </div>
+            <p className="text-[13px] text-warm-2 mb-5">
+              Notes, drafts, and meeting captures.
+            </p>
+
+            <div className="border-b border-warm-gray-2 flex items-end justify-between mb-5">
+              <div className="flex gap-6">
+                {tabs.map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => setTab(t.id)}
+                    className={`relative py-2.5 text-[14px] transition-colors ${
+                      tab === t.id ? "text-warm-black font-semibold" : "text-warm-2 hover:text-warm-black"
+                    }`}
+                  >
+                    {t.label}{" "}
+                    <span className={tab === t.id ? "text-warm-2 font-normal" : ""}>({t.count})</span>
+                    {tab === t.id && (
+                      <span className="absolute left-0 right-0 -bottom-px h-[2px] bg-warm-black" />
+                    )}
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center gap-1 pb-1.5">
+                <button
+                  title="Select"
+                  className="w-7 h-7 rounded-md flex items-center justify-center text-warm-2 hover:text-warm-black hover:bg-warm-base"
+                >
+                  <ListTodo className="w-4 h-4" strokeWidth={1.8} />
+                </button>
+                <button
+                  title="Filter"
+                  className="w-7 h-7 rounded-md flex items-center justify-center text-warm-2 hover:text-warm-black hover:bg-warm-base"
+                >
+                  <Filter className="w-4 h-4" strokeWidth={1.8} />
+                </button>
+              </div>
+            </div>
+
+            <ul>
+              {items.map((m, idx) => (
+                <li key={m.id} className="border-b border-warm-gray-2 last:border-b-0">
+                  <button className="w-full text-left py-4 hover:bg-warm-base/40 -mx-2 px-2 rounded-md transition-colors">
+                    <div className="flex items-baseline justify-between gap-3 mb-1">
+                      <p className="text-[14px] font-medium text-warm-black truncate">{m.title}</p>
+                      <span className="text-[12px] text-warm-2 shrink-0">{m.date}</span>
+                    </div>
+                    <p className="text-[13px] text-warm-2 line-clamp-2">{m.body}</p>
+                    {m.tags && m.tags.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {m.tags.map((t) => (
+                          <span
+                            key={t.label}
+                            className="px-2 py-0.5 rounded-full text-[11.5px] font-medium"
+                            style={{ background: t.tint, color: t.label_color }}
+                          >
+                            {t.label}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+function MemoNavRow({
+  icon: Icon,
+  label,
+  count,
+  active,
+  onClick,
+}: {
+  icon: LucideIcon;
+  label: string;
+  count?: number;
+  active?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`group/mr w-full h-9 px-2 rounded-lg flex items-center gap-2 text-[14px] transition-colors ${
+        active
+          ? "bg-warm-base text-warm-black font-medium"
+          : "text-warm-black hover:bg-warm-base/60"
+      }`}
+    >
+      <Icon
+        className="w-[18px] h-[18px] shrink-0"
+        style={{ color: active ? "#26201c" : "#56534E" }}
+        strokeWidth={1.6}
+      />
+      <span className="flex-1 text-left truncate">{label}</span>
+      {count !== undefined && (
+        <span className="text-[12px] text-warm-2 shrink-0 tabular-nums">{count}</span>
+      )}
+    </button>
   );
 }
 
@@ -2763,7 +3715,7 @@ function AgentPage() {
                     isActive ? "bg-warm-base" : "hover:bg-warm-base/60"
                   }`}
                 >
-                  <span className="w-9 h-9 rounded-full bg-white border border-warm-gray-2 flex items-center justify-center shrink-0 text-warm-black">
+                  <span className="w-9 h-9 rounded-full bg-warm-gray-2 flex items-center justify-center shrink-0 text-warm-black">
                     <Icon className="w-[18px] h-[18px]" strokeWidth={1.8} />
                   </span>
                   <div className="flex-1 min-w-0">
@@ -2786,7 +3738,7 @@ function AgentPage() {
 
       {/* Right detail — empty state for now */}
       <div className="flex-1 min-w-0 flex flex-col items-center justify-center text-center px-8">
-        <span className="w-14 h-14 rounded-full bg-white border border-warm-gray-2 flex items-center justify-center mb-4 text-warm-black">
+        <span className="w-14 h-14 rounded-full bg-warm-gray-2 flex items-center justify-center mb-4 text-warm-black">
           <selected.icon className="w-6 h-6" strokeWidth={1.6} />
         </span>
         <p className="text-[18px] font-semibold text-warm-black mb-1">
@@ -2849,6 +3801,18 @@ function AgentTaskRow({
 
 type SopTab = "featured" | "organization" | "mine";
 
+type SopCategoryKey =
+  | "all"
+  | "design"
+  | "engineering"
+  | "ops"
+  | "hr"
+  | "finance"
+  | "admin"
+  | "team"
+  | "customer"
+  | "ai";
+
 type SopCard = {
   id: string;
   title: string;
@@ -2859,32 +3823,117 @@ type SopCard = {
   iconColor: string;
   author: string;
   scope: SopTab;
+  category?: SopCategoryKey;
 };
 
+// Bug Triage Router style — white card, gray icon tile, gray stroke, hover shadow.
+const SOP_CARD_BG = "#ffffff";
+const SOP_ICON_BG = "#efefea";
+const SOP_ICON_COLOR = "#26201c";
+
+const SOP_CATEGORIES: { key: SopCategoryKey; label: string; count: number }[] = [
+  { key: "all", label: "All", count: 515 },
+  { key: "design", label: "产品设计", count: 54 },
+  { key: "engineering", label: "工程开发", count: 116 },
+  { key: "ops", label: "运维与稳定性", count: 91 },
+  { key: "hr", label: "人事招聘", count: 50 },
+  { key: "finance", label: "财务税务", count: 40 },
+  { key: "admin", label: "行政与物业", count: 44 },
+  { key: "team", label: "团队管理", count: 20 },
+  { key: "customer", label: "客户与反馈", count: 47 },
+  { key: "ai", label: "AI 与研究", count: 46 },
+];
+
+const mk = (
+  id: string,
+  title: string,
+  description: string,
+  icon: LucideIcon,
+  author: string,
+  scope: SopTab,
+  category?: SopCategoryKey,
+): SopCard => ({
+  id,
+  title,
+  description,
+  icon,
+  bg: SOP_CARD_BG,
+  iconBg: SOP_ICON_BG,
+  iconColor: SOP_ICON_COLOR,
+  author,
+  scope,
+  category,
+});
+
 const SOP_CARDS: SopCard[] = [
-  { id: "s1", title: "Customer Interview Synthesis", description: "Turns raw transcripts into themed insight report with...", icon: Users, bg: "#f1dfd9", iconBg: "#ffffff", iconColor: "#26201c", author: "Amanda", scope: "featured" },
-  { id: "s2", title: "Weekly Exec Digest", description: "Compiles key wins, risks, decisions across all active flow...", icon: ClipboardList, bg: "#f1e1c8", iconBg: "#ffffff", iconColor: "#26201c", author: "Chen", scope: "featured" },
-  { id: "s3", title: "Bug Triage Router", description: "Auto-categorizes incoming bugs by severity and owner, drafts...", icon: Sparkles, bg: "#dde3cc", iconBg: "#ffffff", iconColor: "#26201c", author: "Hua", scope: "featured" },
-  { id: "s4", title: "Release Comms Pack", description: "Generates changelog, customer email, and internal Slack post...", icon: Rocket, bg: "#e0d8ce", iconBg: "#ffffff", iconColor: "#26201c", author: "Junjie", scope: "featured" },
-  { id: "s5", title: "1:1 Meeting Notes", description: "From requirements gathering to priority assessment, ensuring clear", icon: Users, bg: "#e5e3db", iconBg: "#ffffff", iconColor: "#26201c", author: "Koko", scope: "featured" },
-  { id: "s6", title: "Retro Action Items", description: "From requirements gathering to priority assessment, ensuring clear", icon: ClipboardList, bg: "#ecd3cb", iconBg: "#ffffff", iconColor: "#26201c", author: "Hua", scope: "featured" },
-  { id: "s7", title: "Onboarding Buddy Brief", description: "Generates day-1 schedule, intro list, and welcome doc.", icon: Users, bg: "#d4cfc4", iconBg: "#ffffff", iconColor: "#26201c", author: "Mei", scope: "featured" },
-  { id: "s8", title: "Quarterly OKR Rollup", description: "Aggregates progress across teams into a single OKR digest.", icon: ClipboardList, bg: "#ede3c4", iconBg: "#ffffff", iconColor: "#26201c", author: "Priya", scope: "featured" },
+  // Featured (2) — the strongest examples
+  mk("f1", "Bug Triage Router", "Auto-categorizes incoming bugs by severity and owner, drafts owner notifications, and updates the dashboard in one go.", Sparkles, "Hua", "featured"),
+  mk("f2", "Customer Interview Synthesis", "Turns raw transcripts into themed insight report with quotes, frequency, and product implications mapped to current OKRs.", Users, "Amanda", "featured"),
+
+  // Organization — HR & Recruiting (人事招聘)
+  mk("o1", "面试招聘 SOP", "盛大公司面试招聘全流程 SOP，涵盖角色分工、面试评价管理、面试官管理、候选人管理及录用流程。适用于 HR 人...", Users, "Jessica LU", "organization", "hr"),
+  mk("o2", "入职流程 SOP", "新员工从签 offer 到入职第一周的完整 SOP，包含 IT 设备、账号开通、buddy 安排、第一周培训计划与首次 1:1 模板。", ClipboardList, "Mei", "organization", "hr"),
+  mk("o3", "员工离职交接 SOP", "员工离职全流程交接 SOP，覆盖文档归档、账号回收、知识转移、客户/合作方通知与最后一周仪式。HR + 直属上级协同。", Briefcase, "HR Team", "organization", "hr"),
+  mk("o4", "季度绩效评估 SOP", "季度绩效评估完整流程：目标对齐、自评、上级评、Calibration、反馈面谈与改进计划。附带模板与时间线。", CheckCircle2, "HR Manager", "organization", "hr"),
+
+  // Organization — Ops / Security (运维与稳定性)
+  mk("o5", "员工网络钓鱼防范培训 SOP", "员工网络钓鱼防范与模拟培训全流程 SOP，面向所有员工自助使用。员工打开 SOP 后，AI 全程引导完成：打招呼 → ...", Atom, "Chris CAI", "organization", "ops"),
+  mk("o6", "员工数据保留与删除合规培训 SOP", "员工数据保留与删除合规培训全流程 SOP，面向所有员工自助使用。员工打开 SOP 后，AI 全程引导完成：打招呼 → ...", BookOpenText, "Chris CAI", "organization", "ops"),
+  mk("o7", "员工数据分类培训 SOP", "员工数据分类培训全流程 SOP，面向所有员工自助使用。员工打开 SOP 后，AI 全程引导完成：打招呼 → 推送培训...", Workflow, "Chris CAI", "organization", "ops"),
+  mk("o8", "安全事件应急响应 SOP", "P0/P1 安全事件应急响应 SOP：发现 → 分级 → 通报链路 → 隔离 → 复盘。包含值班表、通告模板与法务联动节点。", Bell, "Sec Ops", "organization", "ops"),
+  mk("o9", "数据备份与恢复演练 SOP", "季度数据备份与恢复演练 SOP，覆盖核心数据库、对象存储与配置中心的备份验证、RTO/RPO 度量与异常上报。", RefreshCw, "Ops Team", "organization", "ops"),
+
+  // Organization — Engineering (工程开发)
+  mk("o10", "代码审查 Checklist SOP", "代码审查标准化 SOP：合并前检查清单、命名/边界条件/测试覆盖、Reviewer 轮值与冲突处理。适用于全工程团队。", FileText, "Daniel", "organization", "engineering"),
+  mk("o11", "部署流程规范 SOP", "生产部署 SOP：变更窗口、灰度策略、健康检查、回滚预案、值班通知模板。覆盖前端/后端/数据三个域。", Rocket, "Henry", "organization", "engineering"),
+  mk("o12", "API 文档生成 SOP", "API 文档生成与同步 SOP：OpenAPI 规范、示例代码、版本归档、Breaking Change 通知与外部 changelog 自动汇总。", BookOpen, "Zach", "organization", "engineering"),
+  mk("o13", "错误监控配置 SOP", "Sentry/前端错误监控配置 SOP，包含告警阈值、值班分配、误报压制策略与每周错误回顾会议模板。", Bell, "Chris", "organization", "engineering"),
+
+  // Organization — Design (产品设计)
+  mk("o14", "UI 配色分析与推荐", "根据用户已有的界面配色（主色、辅色、背景色），推荐需要补全的颜色角色（如标题色、正文色、辅助色等），并...", ImageIcon, "Yulun CAI", "organization", "design"),
+  mk("o15", "设计组件审计 SOP", "季度设计系统组件审计 SOP：识别使用情况、检查偏离、归档过时组件并同步至代码侧 token。设计 + 前端协同执行。", LayoutGrid, "Mia", "organization", "design"),
+  mk("o16", "用户测试结果整理 SOP", "可用性测试结果整理 SOP：会话剪辑、问题分级、与原型/PRD 关联、产出可执行迭代清单。适配 5 ± 用户的快速测试。", ListTodo, "Yifei", "organization", "design"),
+
+  // Organization — Admin (行政与物业)
+  mk("o17", "居家办公工作信息整合 SOP", "居家办公期间（如生病、隔离、疫情等）快速整合工作信息的完整流程。适用场景：用户居家办公、无法到岗、需要...", FolderPlus, "Vincent XU", "organization", "admin"),
+  mk("o18", "员工差旅审批流程 SOP", "员工差旅申请、审批、报销与出差总结完整 SOP。包含预算上限、紧急联络人、出差日报模板与归档要求。", Briefcase, "Admin", "organization", "admin"),
+
+  // Organization — Finance (财务税务)
+  mk("o19", "报销审核 SOP", "员工报销审核 SOP：单据规范、税务合规检查、超支审批链路、月末结账时间窗与异常案例处理。", Coins, "Finance", "organization", "finance"),
+  mk("o20", "季度财报生成 SOP", "季度财报生成 SOP：科目核对、子公司合并、董事会披露材料生成、外部审计联动节点与归档。", BarChart3, "CFO Office", "organization", "finance"),
+
+  // Organization — Customer & Feedback (客户与反馈)
+  mk("o21", "客户反馈分类 SOP", "客户反馈分类与转派 SOP：渠道汇总、情感识别、与产品/工程/客服路由对接，并产出每周 Top 5 反馈摘要。", MessageSquare, "Support", "organization", "customer"),
+  mk("o22", "NPS 调研执行 SOP", "季度 NPS 调研 SOP：用户分群、问卷投放、回收率监控、定性归因访谈与执行委员会汇报材料模板。", TrendingUp, "Research", "organization", "customer"),
+
+  // Organization — Team Management (团队管理)
+  mk("o23", "周会 Agenda SOP", "团队周会 Agenda SOP：上周回顾、本周聚焦、阻塞与外部依赖、决策记录与 action items 同步至看板。", CalendarDays, "Team Lead", "organization", "team"),
+
+  // Organization — AI & Research (AI 与研究)
+  mk("o24", "Prompt 实验记录 SOP", "Prompt/模型实验记录 SOP：实验编号、Hypothesis、变量、评估集、结果与下一步。统一存档便于团队复用。", Atom, "AI Team", "organization", "ai"),
+  mk("o25", "模型评测流程 SOP", "新模型上线前评测流程 SOP：基准集、自动评测、抽样人工评估、回归检查与上线决议会议模板。", BarChart3, "AI Team", "organization", "ai"),
+
+  // Mine (3)
+  mk("m1", "我的周报模板 SOP", "本周完成 / 下周计划 / 阻塞与求助 / 关键学习。直接生成给上级和团队的两个版本。", ClipboardList, "Yiran", "mine"),
+  mk("m2", "设计 critique 流程 SOP", "我主持的设计 critique 流程：议题准备、参考材料、反馈结构（What works → Concerns → Open）、决议记录。", MessageSquare, "Yiran", "mine"),
+  mk("m3", "用户访谈记录 SOP", "我做用户访谈时的标准 SOP：脚本结构、录音/转写流程、洞察归档至 Notion 并产出可执行清单。", FileText, "Yiran", "mine"),
 ];
 
 function SopsPage() {
   const [tab, setTab] = useState<SopTab>("featured");
+  const [category, setCategory] = useState<SopCategoryKey>("all");
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
 
   const tabs: Array<{ id: SopTab; label: string; count: number }> = [
-    { id: "featured", label: "Featured", count: 12 },
-    { id: "organization", label: "Organization", count: 218 },
-    { id: "mine", label: "Mine", count: 12 },
+    { id: "featured", label: "Featured", count: 2 },
+    { id: "organization", label: "Organization", count: 515 },
+    { id: "mine", label: "Mine", count: 3 },
   ];
 
   const cards = SOP_CARDS.filter((c) => {
     if (tab !== c.scope) return false;
+    if (tab === "organization" && category !== "all" && c.category !== category) return false;
     if (!query.trim()) return true;
     return c.title.toLowerCase().includes(query.trim().toLowerCase());
   });
@@ -2898,7 +3947,7 @@ function SopsPage() {
           <div className="flex items-start justify-between mb-1">
             <div className="flex items-baseline gap-2">
               <h1 className="text-[28px] font-bold tracking-tight">SOPs</h1>
-              <span className="text-[16px] text-warm-2 font-medium">230</span>
+              <span className="text-[16px] text-warm-2 font-medium">(520)</span>
             </div>
             <div className="flex items-center gap-2 mt-1">
               {searchOpen ? (
@@ -2922,7 +3971,7 @@ function SopsPage() {
                   <Search className="w-[18px] h-[18px]" strokeWidth={1.8} />
                 </button>
               )}
-              <button className="h-9 px-4 inline-flex items-center gap-1.5 rounded-full bg-warm-black text-white text-[13px] font-medium hover:bg-warm-black/90">
+              <button className="h-9 px-4 inline-flex items-center gap-1.5 rounded-lg bg-warm-black text-white text-[13px] font-medium hover:bg-warm-black/90">
                 <Plus className="w-3.5 h-3.5" strokeWidth={2} />
                 New SOP
               </button>
@@ -2942,13 +3991,34 @@ function SopsPage() {
                 }`}
               >
                 {t.label}{" "}
-                <span className={tab === t.id ? "text-warm-2 font-normal" : ""}>{t.count}</span>
+                <span className={tab === t.id ? "text-warm-2 font-normal" : ""}>({t.count})</span>
                 {tab === t.id && (
                   <span className="absolute left-0 right-0 -bottom-px h-[2px] bg-warm-black" />
                 )}
               </button>
             ))}
           </div>
+
+          {tab === "organization" && (
+            <div className="flex gap-3 overflow-x-auto pb-3 mb-3 scrollbar-thin">
+              {SOP_CATEGORIES.map((c) => {
+                const isActive = category === c.key;
+                return (
+                  <button
+                    key={c.key}
+                    onClick={() => setCategory(c.key)}
+                    className={`shrink-0 px-2.5 py-[5px] rounded-full text-[12px] font-medium transition-colors ${
+                      isActive
+                        ? "bg-warm-base text-warm-black"
+                        : "text-warm-2 hover:bg-warm-base/60"
+                    }`}
+                  >
+                    {c.label} ({c.count})
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
@@ -2975,7 +4045,7 @@ function SopCardView({ card }: { card: SopCard }) {
   const Icon = card.icon;
   return (
     <button
-      className="text-left rounded-2xl p-4 flex flex-col gap-3 transition hover:brightness-[0.98]"
+      className="text-left rounded-2xl p-4 flex flex-col gap-3 transition-all border border-warm-gray-2 hover:border-warm-border hover:shadow-[0_2px_12px_rgba(38,32,28,0.06)]"
       style={{ background: card.bg }}
     >
       <span
@@ -3302,27 +4372,29 @@ function LinkPage() {
           {/* Page title + search */}
           <div className="flex items-start justify-between mb-1">
             <h1 className="text-[28px] font-bold tracking-tight">Link</h1>
-            {searchOpen ? (
-              <div className="h-9 w-[240px] rounded-lg border border-warm-gray-2 px-3 flex items-center gap-2 bg-white mt-2">
-                <Search className="w-[15px] h-[15px] text-warm-2" strokeWidth={1.8} />
-                <input
-                  autoFocus
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onBlur={() => !query && setSearchOpen(false)}
-                  placeholder="Search tools..."
-                  className="bg-transparent text-[13px] outline-none flex-1 placeholder:text-warm-2"
-                />
-              </div>
-            ) : (
-              <button
-                onClick={() => setSearchOpen(true)}
-                className="w-8 h-8 rounded-md flex items-center justify-center text-warm-2 hover:text-warm-black hover:bg-warm-base mt-2"
-                title="Search"
-              >
-                <Search className="w-[18px] h-[18px]" strokeWidth={1.8} />
-              </button>
-            )}
+            <div className="h-9 mt-2 flex items-center">
+              {searchOpen ? (
+                <div className="h-9 w-[240px] rounded-lg border border-warm-gray-2 px-3 flex items-center gap-2 bg-white">
+                  <Search className="w-[15px] h-[15px] text-warm-2" strokeWidth={1.8} />
+                  <input
+                    autoFocus
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onBlur={() => !query && setSearchOpen(false)}
+                    placeholder="Search tools..."
+                    className="bg-transparent text-[13px] outline-none flex-1 placeholder:text-warm-2"
+                  />
+                </div>
+              ) : (
+                <button
+                  onClick={() => setSearchOpen(true)}
+                  className="w-9 h-9 rounded-md flex items-center justify-center text-warm-2 hover:text-warm-black hover:bg-warm-base"
+                  title="Search"
+                >
+                  <Search className="w-[18px] h-[18px]" strokeWidth={1.8} />
+                </button>
+              )}
+            </div>
           </div>
           <p className="text-[13px] text-warm-2 mb-5">
             Connect tools and accounts to surface the right data when you need it.
