@@ -1459,15 +1459,65 @@ function EmptyTaskView({
 
   return (
     <div className="relative h-full w-full bg-warm-bg-2 flex flex-col items-center justify-center px-6 overflow-hidden">
-      {/* Gemini-style soft blue radial glow */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[640px] w-[1100px] -translate-x-1/2 -translate-y-[55%] rounded-full opacity-90"
-        style={{
-          background:
-            "radial-gradient(closest-side, #D6D2FF 0%, #EBE9FF 35%, rgba(235,233,255,0) 75%)",
-        }}
-      />
+      {/* Animated aurora glow — three pastel blobs drifting on their own loops */}
+      <style>{`
+        @keyframes tg-blob-a {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33%      { transform: translate(60px, 80px) scale(1.1); }
+          66%      { transform: translate(-40px, -50px) scale(0.95); }
+        }
+        @keyframes tg-blob-b {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50%      { transform: translate(-90px, 100px) scale(1.18); }
+        }
+        @keyframes tg-blob-c {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          40%      { transform: translate(80px, -50px) scale(0.92); }
+          80%      { transform: translate(50px, 90px) scale(1.12); }
+        }
+        @keyframes tg-blob-hue {
+          0%   { filter: blur(60px) hue-rotate(0deg); }
+          100% { filter: blur(60px) hue-rotate(360deg); }
+        }
+      `}</style>
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div
+          aria-hidden
+          className="absolute h-[520px] w-[520px] rounded-full"
+          style={{
+            left: "calc(50% - 380px)",
+            top: "calc(50% - 320px)",
+            background: "radial-gradient(circle, #D6D2FF 0%, transparent 70%)",
+            mixBlendMode: "multiply",
+            animation:
+              "tg-blob-a 16s ease-in-out infinite, tg-blob-hue 22s linear infinite",
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute h-[460px] w-[460px] rounded-full"
+          style={{
+            left: "calc(50% - 80px)",
+            top: "calc(50% - 360px)",
+            background: "radial-gradient(circle, #FFD6E8 0%, transparent 70%)",
+            mixBlendMode: "multiply",
+            animation:
+              "tg-blob-b 20s ease-in-out infinite, tg-blob-hue 26s linear infinite reverse",
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute h-[500px] w-[500px] rounded-full"
+          style={{
+            left: "calc(50% + 60px)",
+            top: "calc(50% - 200px)",
+            background: "radial-gradient(circle, #C5E8FF 0%, transparent 70%)",
+            mixBlendMode: "multiply",
+            animation:
+              "tg-blob-c 24s ease-in-out infinite, tg-blob-hue 30s linear infinite",
+          }}
+        />
+      </div>
       <div className="relative w-full max-w-[740px] -mt-12">
         <h1
           className="text-center mb-7 text-[#1E1E21]"
