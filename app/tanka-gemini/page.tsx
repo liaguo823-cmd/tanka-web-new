@@ -705,7 +705,7 @@ function NavRow({
   return (
     <div
       className={`group/nav relative w-[156px] mx-3 h-9 rounded-full flex items-center text-[14px] leading-5 font-medium transition-colors ${
-        active ? "bg-[#d3e3fd] text-[#0b57d0]" : "text-warm-black hover:bg-warm-gray-2/60"
+        active ? "bg-[#E0DEFF] text-[#635BFF]" : "text-warm-black hover:bg-warm-gray-2/60"
       }`}
     >
       <button
@@ -716,7 +716,7 @@ function NavRow({
       >
         <Icon
           className="w-[18px] h-[18px] shrink-0"
-          style={{ color: active ? "#0b57d0" : "#5f6368" }}
+          style={{ color: active ? "#635BFF" : "#5f6368" }}
           strokeWidth={2}
         />
         <span className="flex-1 text-left truncate">{label}</span>
@@ -984,7 +984,7 @@ function NavSidebarCollapsed({
                   title={it.label}
                   className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
                     isActive
-                      ? "bg-[#d3e3fd] text-[#0b57d0] font-medium"
+                      ? "bg-[#E0DEFF] text-[#635BFF] font-medium"
                       : "text-warm-2 hover:text-warm-black hover:bg-warm-gray-2/60"
                   }`}
                 >
@@ -1182,7 +1182,7 @@ function ListColumn({
                 <button
                   onClick={toggle}
                   className={`w-7 h-7 rounded-full flex items-center justify-center ${
-                    open ? "bg-[#d3e3fd] text-[#0b57d0] font-medium" : "hover:bg-warm-gray-2/60"
+                    open ? "bg-[#E0DEFF] text-[#635BFF] font-medium" : "hover:bg-warm-gray-2/60"
                   }`}
                   title="New"
                 >
@@ -1462,7 +1462,7 @@ function EmptyTaskView({
         className="pointer-events-none absolute left-1/2 top-1/2 h-[640px] w-[1100px] -translate-x-1/2 -translate-y-[55%] rounded-full opacity-90"
         style={{
           background:
-            "radial-gradient(closest-side, #cfe1ff 0%, #e3edff 35%, rgba(227,237,255,0) 75%)",
+            "radial-gradient(closest-side, #D6D2FF 0%, #EBE9FF 35%, rgba(235,233,255,0) 75%)",
         }}
       />
       <div className="relative w-full max-w-[740px] -mt-12">
@@ -1716,7 +1716,7 @@ function ConversationView({
                 title="View group members"
                 className={`mt-0.5 -ml-1.5 self-start inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] transition-colors ${
                   membersPanelOpen
-                    ? "bg-[#d3e3fd] text-[#0b57d0] font-medium"
+                    ? "bg-[#E0DEFF] text-[#635BFF] font-medium"
                     : "text-warm-2 hover:bg-warm-base hover:text-warm-black"
                 }`}
               >
@@ -2253,7 +2253,7 @@ function SendBtn({
       className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
         disabled
           ? "bg-warm-gray-2 text-warm-2 cursor-not-allowed"
-          : "bg-[#0b57d0] text-white hover:bg-[#0a4fbf]"
+          : "bg-[#635BFF] text-white hover:bg-[#4F47E5]"
       }`}
     >
       <ArrowUp className="w-4 h-4" strokeWidth={2.2} />
