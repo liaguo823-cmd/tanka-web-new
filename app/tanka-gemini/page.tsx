@@ -1474,8 +1474,8 @@ function EmptyTaskView({
           style={{
             fontFamily:
               "Sohne, var(--font-inter), Inter, system-ui, sans-serif",
-            fontSize: "4rem",
-            lineHeight: 1.1,
+            fontSize: "40px",
+            lineHeight: "44px",
             fontWeight: 600,
             letterSpacing: "-0.02em",
           }}
