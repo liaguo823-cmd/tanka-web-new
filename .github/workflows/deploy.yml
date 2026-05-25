@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -42,11 +42,11 @@ jobs:
       - name: Stash new build
         run: mv out v2-out
 
-      # Rewind to the parent commit (= the previously deployed "old"
-      # version) and build it for the root URL.
-      - name: Checkout previous commit source
+      # Rewind to the explicit "old" commit (last deploy before the
+      # icon overhaul) and build it for the root URL.
+      - name: Checkout old commit source
         run: |
-          git checkout HEAD~1 -- app .github next.config.ts package.json package-lock.json public || true
+          git checkout a4f8886 -- app next.config.ts package.json package-lock.json public || true
 
       - name: Reinstall dependencies for old version (if package-lock changed)
         run: npm ci
