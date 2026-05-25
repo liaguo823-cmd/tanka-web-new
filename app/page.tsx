@@ -663,19 +663,6 @@ function navCreateMenu(itemId: string): MenuSection[] | null {
           ],
         },
       ];
-    case "link":
-      return [
-        {
-          items: [
-            {
-              id: "new-connector",
-              label: "Add connector",
-              description: "Bring data in from anywhere",
-              icon: Link2,
-            },
-          ],
-        },
-      ];
     default:
       return null;
   }
@@ -1491,7 +1478,7 @@ function ListColumn({
                                 {item.title}
                               </p>
                               {item.unread && (
-                                <span className="w-1.5 h-1.5 rounded-full bg-warm-black shrink-0" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#dc2626] shrink-0" />
                               )}
                             </div>
                             <p className="text-[12px] text-warm-2 truncate">{item.preview}</p>
@@ -1611,7 +1598,7 @@ function ChatRow({
                 {item.unreadCount > 99 ? "99+" : item.unreadCount}
               </span>
             ) : item.unread ? (
-              <span className="w-1.5 h-1.5 rounded-full bg-warm-black shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#dc2626] shrink-0" />
             ) : null}
           </div>
         </div>
