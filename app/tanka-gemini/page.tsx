@@ -1459,15 +1459,6 @@ function EmptyTaskView({
 
   return (
     <div className="relative h-full w-full bg-warm-bg-2 flex flex-col items-center justify-center px-6 overflow-hidden">
-      {/* Gemini-style soft blue radial glow */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[640px] w-[1100px] -translate-x-1/2 -translate-y-[55%] rounded-full opacity-90"
-        style={{
-          background:
-            "radial-gradient(closest-side, #cfe1ff 0%, #e3edff 35%, rgba(227,237,255,0) 75%)",
-        }}
-      />
       <div className="relative w-full max-w-[740px] -mt-12">
         <h1
           className="text-center mb-7 text-[#1f1f1f]"
@@ -1484,7 +1475,7 @@ function EmptyTaskView({
         </h1>
 
         <div
-          className="rounded-[32px] border border-warm-gray-2 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_6px_18px_rgba(0,0,0,0.06)] px-5 py-4"
+          className="rounded-[32px] border border-warm-gray-2 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_6px_18px_rgba(0,0,0,0.06),0_0_60px_10px_rgba(135,170,255,0.22),0_0_120px_30px_rgba(207,225,255,0.35)] px-5 py-4"
           style={{
             backgroundImage:
               "linear-gradient(180deg, rgb(255,255,255) 0%, rgb(254,254,253) 33%, rgb(253,253,252) 66%, rgb(252,252,250) 100%)",
