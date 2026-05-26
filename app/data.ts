@@ -14,13 +14,12 @@ export const workspaces: WorkspaceItem[] = [
   {
     id: "s1",
     letter: "S",
-    name: "Studio",
+    name: "Shanda",
     color: "#ffffff",
     textColor: "#26201c",
     badge: 2,
     faded: true,
-    avatar:
-      "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=120&h=120&fit=crop&q=80",
+    avatar: "/shanda.png",
   },
   { id: "t", letter: "T", name: "Tanka", color: "#26201c", textColor: "#ffffff", active: true },
   {
@@ -71,21 +70,13 @@ export const navGroups: NavGroup[] = [
         icon: "LayoutGrid",
         children: [
           { id: "sop", label: "SOP", icon: "ClipboardList" },
-          { id: "agent", label: "Agent", icon: "Box" },
+          { id: "memos", label: "Memos", icon: "BookOpenText" },
+          { id: "followups", label: "Follow-ups", icon: "Flag" },
+          { id: "votes", label: "Votes", icon: "Check" },
+          { id: "calendar", label: "Calendar", icon: "Calendar" },
         ],
       },
       { id: "chat", label: "Chat", icon: "MessageSquare" },
-    ],
-  },
-  {
-    id: "apps",
-    label: "Apps",
-    items: [
-      { id: "link", label: "Link", icon: "Link2" },
-      { id: "memos", label: "Memos", icon: "BookOpenText" },
-      { id: "followups", label: "Follow-ups", icon: "Flag" },
-      { id: "votes", label: "Votes", icon: "Check" },
-      { id: "calendar", label: "Calendar", icon: "Calendar" },
     ],
   },
 ];

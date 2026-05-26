@@ -32,6 +32,7 @@
   --color-teal-tint: var(--teal-tint);
   --font-sans: var(--font-geist-sans), "Inter", "Noto Sans SC", "PingFang SC", sans-serif;
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-serif), "Source Serif 4", "Iowan Old Style", "Charter", Georgia, serif;
 }
 
 body {
