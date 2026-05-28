@@ -77,11 +77,12 @@ export default function OrgRail() {
             {/* Divider between workspaces and the Add button */}
             <div className="my-[6px] h-px w-[28px] bg-[#d0dae8]" />
 
-            {/* Add workspace — dashed-circle outline, no fill. */}
+            {/* Add workspace — dashed-circle outline, no fill,
+                with a soft white wash on hover for clear feedback. */}
             <button
               type="button"
               aria-label="Add workspace"
-              className="rounded-full size-[32px] flex items-center justify-center border-2 border-dashed border-[#cbd5e1] text-[#8793ab] hover:border-[#8793ab] hover:text-[#475569] transition-colors"
+              className="rounded-full size-[32px] flex items-center justify-center border-2 border-dashed border-[#cbd5e1] text-[#8793ab] bg-transparent hover:bg-white/60 hover:border-[#8793ab] hover:text-[#475569] transition-colors"
             >
               <Plus size={16} strokeWidth={2} />
             </button>
