@@ -76,7 +76,7 @@ type NavItem = {
 
 const TOP_NAV: NavItem[] = [
   { href: "/flow", label: "Flow", iconActive: asset("/figma/menu-flow-active.svg"), iconInactive: asset("/figma/menu-flow-inactive.svg"), plusGoesToHref: true },
-  { href: "/chat", label: "Chat", iconActive: asset("/figma/menu-chat-active.svg"), iconInactive: asset("/figma/menu-chat-inactive.svg"), iconActiveSize: 16, plusItems: ["New Chat", "New Folder", "New Broadcast"] },
+  { href: "/chat", label: "Chat", iconActive: asset("/figma/menu-chat-active.svg"), iconInactive: asset("/figma/menu-chat-inactive.svg"), plusItems: ["New Chat", "New Folder", "New Broadcast"] },
   { href: "/link", label: "Link", iconActive: asset("/figma/menu-link-active.svg"), iconInactive: asset("/figma/menu-link-inactive.svg") },
 ];
 
