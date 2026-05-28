@@ -17,7 +17,7 @@
  */
 
 import Link from "next/link";
-import { ChevronsLeft } from "lucide-react";
+import { ChevronsLeft, Plus } from "lucide-react";
 import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useMenuCollapse, WORKSPACES, type WorkspaceId } from "./MenuContext";
@@ -77,13 +77,13 @@ export default function OrgRail() {
             {/* Divider between workspaces and the Add button */}
             <div className="my-[6px] h-px w-[28px] bg-[#d0dae8]" />
 
-            {/* Add workspace — permanent white circle */}
+            {/* Add workspace — dashed-circle outline, no fill. */}
             <button
               type="button"
               aria-label="Add workspace"
-              className="rounded-full size-[32px] flex items-center justify-center bg-white hover:bg-white shadow-[0_1px_2px_rgba(15,41,77,0.06)] transition-colors"
+              className="rounded-full size-[32px] flex items-center justify-center border-2 border-dashed border-[#cbd5e1] text-[#8793ab] hover:border-[#8793ab] hover:text-[#475569] transition-colors"
             >
-              <img alt="" className="block size-[16px]" src={imgPlus} />
+              <Plus size={16} strokeWidth={2} />
             </button>
           </div>
         </div>
