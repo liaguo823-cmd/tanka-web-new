@@ -22,7 +22,8 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Plus, type IconProps } from "@phosphor-icons/react/dist/ssr";
+import { Plus } from "@phosphor-icons/react/dist/ssr";
+import type { IconProps } from "@phosphor-icons/react";
 import {
   PanelLeftClose,
   PanelLeftOpen,
