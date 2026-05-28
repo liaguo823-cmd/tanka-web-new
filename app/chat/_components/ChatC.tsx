@@ -92,7 +92,7 @@ export default function ChatC() {
         </div>
       </div>
       <div className="bg-[#f0f1fa] content-stretch flex flex-[1_0_0] flex-col items-center min-h-px relative w-full" data-node-id="3:8047">
-        <div className="bg-[#f7f8fc] content-stretch flex flex-[1_0_0] flex-col gap-[9px] items-center min-h-px overflow-clip py-[10px] relative w-full" data-node-id="3:8048">
+        <div className="bg-[#f7f8fc] content-stretch flex flex-[1_0_0] flex-col gap-[9px] items-center min-h-px overflow-clip py-[10px] relative w-full max-w-[920px]" data-node-id="3:8048">
           <div className="bg-[#fdfefe] content-stretch flex gap-[0px] items-center justify-center px-[6px] py-[0px] relative rounded-[4999.5px] shrink-0" data-node-id="3:8049" data-name="Tag">
             <p className="[word-break:break-word] font-['SF_Pro',-apple-system,'BlinkMacSystemFont','Helvetica_Neue',sans-serif] font-[400] leading-[14.3px] relative shrink-0 text-[#8793ab] text-[11px] whitespace-nowrap" data-node-id="I3:8049;44:66473" style={{ fontVariationSettings: "'wdth' 100" }}>
               Today
@@ -429,7 +429,7 @@ export default function ChatC() {
             </div>
           </div>
         </div>
-        <div className="bg-[#f7f8fc] content-stretch flex flex-col items-start p-[12px] relative shrink-0 w-full" data-node-id="3:8109">
+        <div className="bg-[#f7f8fc] content-stretch flex flex-col items-start p-[12px] relative shrink-0 w-full max-w-[920px]" data-node-id="3:8109">
           <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-node-id="3:8110" data-name="Input/Desktop">
             <div className="content-stretch flex flex-col h-[180px] items-center px-[0px] relative rounded-[12px] shrink-0 w-full" data-node-id="I3:8110;1915:17082" data-name="Desktop Chat Input">
               <div className="bg-[#fdfefe] content-stretch flex flex-[1_0_0] flex-col isolate items-start min-h-px overflow-clip relative rounded-[12px] w-full" data-node-id="I3:8110;1915:17082;1889:25884" data-name="web-input">
