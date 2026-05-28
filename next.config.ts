@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const repo = "tanka-web-new";
+const repo = "tanka-web-current";
 const isProd = process.env.NODE_ENV === "production";
 // Optional sub-path (e.g. "/v2") so we can deploy the same repo to a
 // nested URL alongside the root build.

@@ -1,0 +1,6 @@
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Back bubble (smaller, upper-right) -->
+  <path d="M21 4H10C9.44772 4 9 4.44772 9 5V7H17C18.1046 7 19 7.89543 19 9V14L21 16V5C21 4.44772 20.5523 4 21 4Z" stroke="#8793AB" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+  <!-- Front bubble (larger, lower-left, with tail) -->
+  <path d="M3 10C3 9.44772 3.44772 9 4 9H16C16.5523 9 17 9.44772 17 10V17C17 17.5523 16.5523 18 16 18H8L4 21V10Z" stroke="#8793AB" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+</svg>

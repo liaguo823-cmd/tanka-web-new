@@ -1,0 +1,84 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 100 48" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Frame 1321317648">
+<g id="Empty Chart" opacity="0.3">
+<path d="M0 37.4857C0 34.456 2.45604 32 5.48571 32H6.51429C9.54396 32 12 34.456 12 37.4857V42.5143C12 45.544 9.54396 48 6.51429 48H5.48571C2.45604 48 0 45.544 0 42.5143V37.4857Z" fill="var(--fill-0, #005EFF)" fill-opacity="0.08"/>
+<path d="M0 37.4857C0 34.456 2.45604 32 5.48571 32H6.51429C9.54396 32 12 34.456 12 37.4857V42.5143C12 45.544 9.54396 48 6.51429 48H5.48571C2.45604 48 0 45.544 0 42.5143V37.4857Z" fill="url(#pattern0_0_4386)"/>
+</g>
+<g id="Empty Chart_2" opacity="0.5">
+<rect x="22" y="26" width="12" height="22" rx="5.48571" fill="var(--fill-0, #005EFF)" fill-opacity="0.08"/>
+<rect x="22" y="26" width="12" height="22" rx="5.48571" fill="url(#pattern1_0_4386)"/>
+</g>
+<g id="Empty Chart_3" opacity="0.51">
+<rect x="44" y="4" width="12" height="44" rx="5.48571" fill="var(--fill-0, #005EFF)" fill-opacity="0.08"/>
+<rect x="44" y="4" width="12" height="44" rx="5.48571" fill="url(#pattern2_0_4386)"/>
+</g>
+<g id="Empty Chart_4" opacity="0.5">
+<path d="M66 23.4857C66 20.456 68.456 18 71.4857 18H72.5143C75.544 18 78 20.456 78 23.4857V42.5143C78 45.544 75.544 48 72.5143 48H71.4857C68.456 48 66 45.544 66 42.5143V23.4857Z" fill="var(--fill-0, #005EFF)" fill-opacity="0.08"/>
+<path d="M66 23.4857C66 20.456 68.456 18 71.4857 18H72.5143C75.544 18 78 20.456 78 23.4857V42.5143C78 45.544 75.544 48 72.5143 48H71.4857C68.456 48 66 45.544 66 42.5143V23.4857Z" fill="url(#pattern3_0_4386)"/>
+</g>
+<g id="Empty Chart_5" opacity="0.3">
+<rect x="88" y="26" width="12" height="22" rx="5.48571" fill="var(--fill-0, #005EFF)" fill-opacity="0.08"/>
+<rect x="88" y="26" width="12" height="22" rx="5.48571" fill="url(#pattern4_0_4386)"/>
+</g>
+<g id="Empty Chart_6" opacity="0.3">
+<path d="M43.6855 16.4815C43.6855 13.4541 46.3718 11 49.6855 11V11C52.9993 11 55.6855 13.4541 55.6855 16.4815V42.5185C55.6855 45.5459 52.9993 48 49.6855 48V48C46.3718 48 43.6855 45.5459 43.6855 42.5185V16.4815Z" fill="var(--fill-0, #184AFF)"/>
+<path d="M43.6855 16.4815C43.6855 13.4541 46.3718 11 49.6855 11V11C52.9993 11 55.6855 13.4541 55.6855 16.4815V42.5185C55.6855 45.5459 52.9993 48 49.6855 48V48C46.3718 48 43.6855 45.5459 43.6855 42.5185V16.4815Z" fill="url(#pattern5_0_4386)"/>
+</g>
+</g>
+<defs>
+<pattern id="pattern0_0_4386" patternUnits="userSpaceOnUse" patternTransform="matrix(23.7255 0 0 3.30682 -5.86277 36.6931)" preserveAspectRatio="none" viewBox="0 -0.000236867 82.9608 11.5629" width="1" height="1">
+<use xlink:href="#pattern0_0_4386_inner" transform="translate(-82.9608 -23.1258)"/>
+<use xlink:href="#pattern0_0_4386_inner" transform="translate(0 -23.1258)"/>
+<use xlink:href="#pattern0_0_4386_inner" transform="translate(-82.9608 -11.5629)"/>
+<use xlink:href="#pattern0_0_4386_inner" transform="translate(0 -11.5629)"/>
+<use xlink:href="#pattern0_0_4386_inner" transform="translate(-82.9608 0)"/>
+<g id="pattern0_0_4386_inner">
+<path id="Vector 701 (Stroke)" d="M82.7019 0L82.9608 0.965926L0.258819 23.1258L0 22.1599L82.7019 0Z" fill="var(--fill-0, #C3DDFF)"/>
+</g>
+</pattern><pattern id="pattern1_0_4386" patternUnits="userSpaceOnUse" patternTransform="matrix(22.755 0 0 3.17154 16.6225 33.8284)" preserveAspectRatio="none" viewBox="0 -0.000236867 82.9608 11.5629" width="1" height="1">
+<use xlink:href="#pattern1_0_4386_inner" transform="translate(-82.9608 -23.1258)"/>
+<use xlink:href="#pattern1_0_4386_inner" transform="translate(0 -23.1258)"/>
+<use xlink:href="#pattern1_0_4386_inner" transform="translate(-82.9608 -11.5629)"/>
+<use xlink:href="#pattern1_0_4386_inner" transform="translate(0 -11.5629)"/>
+<use xlink:href="#pattern1_0_4386_inner" transform="translate(-82.9608 0)"/>
+<g id="pattern1_0_4386_inner">
+<path id="Vector 701 (Stroke)" d="M82.7019 0L82.9608 0.965926L0.258819 23.1258L0 22.1599L82.7019 0Z" fill="var(--fill-0, #C3DDFF)"/>
+</g>
+</pattern><pattern id="pattern2_0_4386" patternUnits="userSpaceOnUse" patternTransform="matrix(22.755 0 0 3.17154 38.6225 22.8284)" preserveAspectRatio="none" viewBox="0 -0.000236867 82.9608 11.5629" width="1" height="1">
+<use xlink:href="#pattern2_0_4386_inner" transform="translate(-82.9608 -23.1258)"/>
+<use xlink:href="#pattern2_0_4386_inner" transform="translate(0 -23.1258)"/>
+<use xlink:href="#pattern2_0_4386_inner" transform="translate(-82.9608 -11.5629)"/>
+<use xlink:href="#pattern2_0_4386_inner" transform="translate(0 -11.5629)"/>
+<use xlink:href="#pattern2_0_4386_inner" transform="translate(-82.9608 0)"/>
+<g id="pattern2_0_4386_inner">
+<path id="Vector 701 (Stroke)" d="M82.7019 0L82.9608 0.965926L0.258819 23.1258L0 22.1599L82.7019 0Z" fill="var(--fill-0, #C3DDFF)"/>
+</g>
+</pattern><pattern id="pattern3_0_4386" patternUnits="userSpaceOnUse" patternTransform="matrix(22.755 0 0 3.17154 60.6225 29.8284)" preserveAspectRatio="none" viewBox="0 -0.000236867 82.9608 11.5629" width="1" height="1">
+<use xlink:href="#pattern3_0_4386_inner" transform="translate(-82.9608 -23.1258)"/>
+<use xlink:href="#pattern3_0_4386_inner" transform="translate(0 -23.1258)"/>
+<use xlink:href="#pattern3_0_4386_inner" transform="translate(-82.9608 -11.5629)"/>
+<use xlink:href="#pattern3_0_4386_inner" transform="translate(0 -11.5629)"/>
+<use xlink:href="#pattern3_0_4386_inner" transform="translate(-82.9608 0)"/>
+<g id="pattern3_0_4386_inner">
+<path id="Vector 701 (Stroke)" d="M82.7019 0L82.9608 0.965926L0.258819 23.1258L0 22.1599L82.7019 0Z" fill="var(--fill-0, #C3DDFF)"/>
+</g>
+</pattern><pattern id="pattern4_0_4386" patternUnits="userSpaceOnUse" patternTransform="matrix(23.7255 0 0 3.30682 82.1372 33.6931)" preserveAspectRatio="none" viewBox="0 -0.000236867 82.9608 11.5629" width="1" height="1">
+<use xlink:href="#pattern4_0_4386_inner" transform="translate(-82.9608 -23.1258)"/>
+<use xlink:href="#pattern4_0_4386_inner" transform="translate(0 -23.1258)"/>
+<use xlink:href="#pattern4_0_4386_inner" transform="translate(-82.9608 -11.5629)"/>
+<use xlink:href="#pattern4_0_4386_inner" transform="translate(0 -11.5629)"/>
+<use xlink:href="#pattern4_0_4386_inner" transform="translate(-82.9608 0)"/>
+<g id="pattern4_0_4386_inner">
+<path id="Vector 701 (Stroke)" d="M82.7019 0L82.9608 0.965926L0.258819 23.1258L0 22.1599L82.7019 0Z" fill="var(--fill-0, #C3DDFF)"/>
+</g>
+</pattern><pattern id="pattern5_0_4386" patternUnits="userSpaceOnUse" patternTransform="matrix(13.2737 0 0 1.85007 43.0487 27.6499)" preserveAspectRatio="none" viewBox="0 -0.000236867 82.9608 11.5629" width="1" height="1">
+<use xlink:href="#pattern5_0_4386_inner" transform="translate(-82.9608 -23.1258)"/>
+<use xlink:href="#pattern5_0_4386_inner" transform="translate(0 -23.1258)"/>
+<use xlink:href="#pattern5_0_4386_inner" transform="translate(-82.9608 -11.5629)"/>
+<use xlink:href="#pattern5_0_4386_inner" transform="translate(0 -11.5629)"/>
+<use xlink:href="#pattern5_0_4386_inner" transform="translate(-82.9608 0)"/>
+<g id="pattern5_0_4386_inner">
+<path id="Vector 701 (Stroke)" d="M82.7019 0L82.9608 0.965926L0.258819 23.1258L0 22.1599L82.7019 0Z" fill="var(--fill-0, #C3DDFF)"/>
+</g>
+</pattern></defs>
+</svg>
