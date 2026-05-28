@@ -92,7 +92,7 @@ export default function ChatC() {
         </div>
       </div>
       <div className="bg-[#f7f8fc] content-stretch flex flex-[1_0_0] flex-col items-center min-h-px relative w-full" data-node-id="3:8047">
-        <div className="bg-[#f7f8fc] content-stretch flex flex-[1_0_0] flex-col gap-[9px] items-center min-h-px overflow-clip py-[10px] relative w-full max-w-[1080px]" data-node-id="3:8048">
+        <div className="bg-[#f7f8fc] content-stretch flex flex-[1_0_0] flex-col gap-[9px] items-center min-h-0 overflow-y-auto scrollbar-thin py-[10px] relative w-full max-w-[1080px]" data-node-id="3:8048">
           <div className="bg-[#fdfefe] content-stretch flex gap-[0px] items-center justify-center px-[6px] py-[0px] relative rounded-[4999.5px] shrink-0" data-node-id="3:8049" data-name="Tag">
             <p className="[word-break:break-word] font-['SF_Pro',-apple-system,'BlinkMacSystemFont','Helvetica_Neue',sans-serif] font-[400] leading-[14.3px] relative shrink-0 text-[#8793ab] text-[11px] whitespace-nowrap" data-node-id="I3:8049;44:66473" style={{ fontVariationSettings: "'wdth' 100" }}>
               Today
