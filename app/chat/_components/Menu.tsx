@@ -22,7 +22,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Plus, X as PhosphorX } from "@phosphor-icons/react/dist/ssr";
+import { Plus, X as PhosphorX, PushPin } from "@phosphor-icons/react/dist/ssr";
 import type { IconProps } from "@phosphor-icons/react";
 import {
   PanelLeftClose,
@@ -33,7 +33,6 @@ import {
   ArrowRight,
   PlusCircle,
   ChevronDown,
-  Pin,
 } from "lucide-react";
 import {
   useCallback,
@@ -561,7 +560,7 @@ function IconWithTooltip({
   );
 }
 
-/** Collapsed-menu pinned-docs button. Pushpin glyph; on hover
+/** Collapsed-menu pinned-docs button. PushPin glyph; on hover
  *  opens a portal dropdown listing the same PINNED items the
  *  expanded section renders inline. */
 function CollapsedPinnedButton() {
@@ -597,9 +596,20 @@ function CollapsedPinnedButton() {
         onFocus={show}
         onBlur={scheduleHide}
         aria-label="Pinned docs"
-        className="w-[36px] h-[36px] flex items-center justify-center rounded-[8px] text-[#455871] hover:text-[#020617] hover:bg-[#d8dfed]/50 transition-colors"
+        className="group/pin w-[36px] h-[36px] flex items-center justify-center rounded-[8px] text-[#455871] hover:text-[#35394C] hover:bg-[#d8dfed]/50 transition-colors"
       >
-        <Pin size={22} strokeWidth={1.8} />
+        <span className="grid place-items-center">
+          <PushPin
+            size={22}
+            weight="regular"
+            className="col-start-1 row-start-1 transition-opacity duration-150 group-hover/pin:opacity-0"
+          />
+          <PushPin
+            size={22}
+            weight="fill"
+            className="col-start-1 row-start-1 opacity-0 transition-[opacity,transform] duration-150 group-hover/pin:opacity-100 group-hover/pin:rotate-[20deg]"
+          />
+        </span>
       </button>
       {open && typeof window !== "undefined" &&
         createPortal(
