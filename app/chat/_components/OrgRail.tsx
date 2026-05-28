@@ -94,7 +94,7 @@ export default function OrgRail() {
             rail's overflow-hidden (needed for the collapse animation). */}
         <div className="flex items-center justify-center w-full">
           <GearTooltipLink href="/team-settings" label="Team Settings">
-            <img alt="" className="block size-[20px]" src={imgNut} />
+            <img alt="" className="block size-[24px]" src={imgNut} />
           </GearTooltipLink>
         </div>
       </div>
