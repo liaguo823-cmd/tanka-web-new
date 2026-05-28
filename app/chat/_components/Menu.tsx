@@ -32,6 +32,7 @@ import {
   LogOut,
   ArrowRight,
   FileText,
+  PlusCircle,
   X,
 } from "lucide-react";
 import {
@@ -396,6 +397,17 @@ export default function Menu() {
             </div>
           </div>
         )}
+
+        {/* Collapsed-only: short divider + circled-+ create button
+            at the bottom of the icon column. Hovering the + reveals
+            a portal dropdown with all the "New X" actions that the
+            expanded NavTab's + buttons handle individually. */}
+        {menuCollapsed && (
+          <div className="flex flex-col items-center gap-[8px] shrink-0 w-full pt-[6px] pb-[12px]">
+            <div className="bg-[#d0dae8] h-px w-[28px]" />
+            <CollapsedCreateButton />
+          </div>
+        )}
       </div>
 
       {/* Bottom row — user photo (always visible) + fold/expand icon.
@@ -466,6 +478,97 @@ export default function Menu() {
   );
 }
 
+/** Bottom-of-the-collapsed-menu "create" button. A circled +, sized
+ *  to match the 36×36 nav-tab hit area. Hovering reveals a portal-
+ *  rendered dropdown that bundles every "New X" action the expanded
+ *  NavTab + buttons handle individually (Chat / Memo / Follow-up /
+ *  Vote / Calendar event). */
+function CollapsedCreateButton() {
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const [modal, setModal] = useState<PlusModalKind | null>(null);
+  const closeTimer = useRef<number | null>(null);
+
+  function show() {
+    if (closeTimer.current !== null) {
+      window.clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+    if (btnRef.current) {
+      const r = btnRef.current.getBoundingClientRect();
+      setPos({ top: r.top - 8, left: r.right + 12 });
+    }
+    setOpen(true);
+  }
+  function scheduleHide() {
+    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
+    closeTimer.current = window.setTimeout(() => setOpen(false), 180);
+  }
+
+  const items: Array<{ label: string; onSelect: () => void }> = [
+    { label: "New Chat", onSelect: () => router.push("/chat") },
+    { label: "New Memo", onSelect: () => setModal("memo") },
+    { label: "New Follow-up", onSelect: () => setModal("follow-up") },
+    { label: "New Vote", onSelect: () => setModal("vote") },
+    { label: "New Calendar event", onSelect: () => setModal("calendar") },
+  ];
+
+  return (
+    <>
+      <button
+        ref={btnRef}
+        type="button"
+        onMouseEnter={show}
+        onMouseLeave={scheduleHide}
+        onFocus={show}
+        onBlur={scheduleHide}
+        aria-label="Create new"
+        className="w-[36px] h-[36px] flex items-center justify-center rounded-[8px] text-[#455871] hover:text-[#020617] hover:bg-[#d8dfed]/50 transition-colors"
+      >
+        <PlusCircle size={22} strokeWidth={1.6} />
+      </button>
+      {open && typeof window !== "undefined" &&
+        createPortal(
+          <div
+            ref={dropdownRef}
+            onMouseEnter={show}
+            onMouseLeave={scheduleHide}
+            className="fixed z-[100] w-[200px] rounded-[12px] bg-white border border-[#e7ebf8] shadow-[0_8px_24px_rgba(15,41,77,0.10),0_2px_4px_rgba(15,41,77,0.04)] overflow-hidden"
+            style={{ top: pos.top, left: pos.left }}
+            role="menu"
+          >
+            {items.map((item, i) => (
+              <button
+                key={item.label}
+                type="button"
+                role="menuitem"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setOpen(false);
+                  item.onSelect();
+                }}
+                className={`w-full text-left px-4 py-3 text-[14px] text-[#020617] hover:bg-[#f5f5f7] transition-colors ${
+                  i !== items.length - 1 ? "border-b border-[#f1f3f7]" : ""
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>,
+          document.body,
+        )}
+      <MemoModal open={modal === "memo"} onClose={() => setModal(null)} />
+      <FollowUpModal open={modal === "follow-up"} onClose={() => setModal(null)} />
+      <VoteModal open={modal === "vote"} onClose={() => setModal(null)} />
+      <CalendarModal open={modal === "calendar"} onClose={() => setModal(null)} />
+    </>
+  );
+}
+
 /** A pinned doc row in the bottom-half of the menu. Renders a Feishu-
  *  style file glyph, a truncated label, and a hover-revealed close
  *  button. Long titles get a portal-rendered tooltip on hover/focus. */
@@ -504,9 +607,9 @@ function PinnedTab({ item }: { item: PinnedItem }) {
         </span>
         <span
           aria-hidden
-          className="opacity-0 group-hover/pin:opacity-100 transition-opacity w-[18px] h-[18px] flex items-center justify-center rounded text-[#8793ab] hover:bg-[#c9d3e6] hover:text-[#455871]"
+          className="opacity-0 group-hover/pin:opacity-100 transition-opacity w-[22px] h-[22px] rounded-[6px] flex items-center justify-center text-[#455871] hover:bg-[#c9d3e6]"
         >
-          <X size={12} strokeWidth={2} />
+          <X size={14} strokeWidth={2.4} />
         </span>
       </button>
       {pos && typeof window !== "undefined" &&
