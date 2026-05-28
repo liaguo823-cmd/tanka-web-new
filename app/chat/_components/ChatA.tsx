@@ -26,7 +26,7 @@ const FONT_SF_PRO_MEDIUM = "font-['SF_Pro',-apple-system,'BlinkMacSystemFont','H
 export default function ChatA() {
   return (
     <div className="border-[#e7ebf8] border-r border-solid content-stretch flex flex-col items-center px-[0.5px] relative w-[376px] shrink-0 h-full" data-node-id="3:7726" data-name="ChatA">
-      <div className="bg-[#f7f8fc] content-stretch flex flex-col h-[1040px] items-start relative shrink-0 w-full" data-node-id="3:7742" data-name="Contants">
+      <div className="bg-[#f7f8fc] content-stretch flex flex-col h-full min-h-0 items-start relative shrink-0 w-full" data-node-id="3:7742" data-name="Contants">
         {/* Title bar */}
         <div className="bg-[#f7f8fc] border-[#e7ebf8] border-b border-solid content-stretch flex gap-[9px] h-[72px] items-center min-h-[44px] pb-[3.5px] pt-[3px] px-[15px] relative shrink-0 w-full" data-node-id="26:20913" data-name="Title_2025">
           <div className="flex-[1_0_0] min-w-px relative" data-node-id="I26:20913;1149:2198" data-name="middle">
@@ -104,8 +104,9 @@ export default function ChatA() {
           </div>
         </div>
 
-        {/* Chat list */}
-        <div className="content-stretch flex flex-[1_0_0] flex-col items-end min-h-px relative w-[375px]" data-node-id="3:7789">
+        {/* Chat list — scrollable so the rows can overflow without
+            painting different bg colors at the bottom of the column. */}
+        <div className="content-stretch flex flex-[1_0_0] flex-col items-end min-h-0 relative w-full overflow-y-auto scrollbar-thin" data-node-id="3:7789">
           {/* Row 1: AI Assistant (SELECTED state, has image 12 overlay) */}
           <div className="bg-[rgba(227,232,242,0.6)] content-stretch flex items-center justify-end overflow-clip relative shrink-0 w-full" data-node-id="3:7790" data-name="messages row">
             <div className="content-stretch flex flex-[1_0_0] flex-col items-start justify-center min-w-px relative" data-node-id="I3:7790;1040:34748" data-name="Content">
