@@ -22,7 +22,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Plus } from "@phosphor-icons/react/dist/ssr";
+import { Plus, X as PhosphorX } from "@phosphor-icons/react/dist/ssr";
 import type { IconProps } from "@phosphor-icons/react";
 import {
   PanelLeftClose,
@@ -33,7 +33,7 @@ import {
   ArrowRight,
   FileText,
   PlusCircle,
-  X,
+  ChevronDown,
 } from "lucide-react";
 import {
   useCallback,
@@ -297,6 +297,7 @@ export default function Menu() {
                 >
                   {activeWorkspace.name}
                 </p>
+                <WorkspaceMenuButton />
               </div>
             </div>
           )}
@@ -478,6 +479,99 @@ export default function Menu() {
   );
 }
 
+/** Chevron-down next to the workspace name in the Menu header.
+ *  Hovering flips the chevron 180° and reveals a portal dropdown
+ *  with the three workspace actions (Team Settings / Invite Members
+ *  / Leave). Same hover-open pattern as the CollapsedCreateButton
+ *  with a 180ms close grace so the cursor can move onto the menu. */
+function WorkspaceMenuButton() {
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const closeTimer = useRef<number | null>(null);
+
+  function show() {
+    if (closeTimer.current !== null) {
+      window.clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+    if (btnRef.current) {
+      const r = btnRef.current.getBoundingClientRect();
+      setPos({ top: r.bottom + 6, left: r.left });
+    }
+    setOpen(true);
+  }
+  function scheduleHide() {
+    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
+    closeTimer.current = window.setTimeout(() => setOpen(false), 180);
+  }
+
+  return (
+    <>
+      <button
+        ref={btnRef}
+        type="button"
+        onMouseEnter={show}
+        onMouseLeave={scheduleHide}
+        onFocus={show}
+        onBlur={scheduleHide}
+        aria-label="Workspace menu"
+        aria-expanded={open}
+        className="w-[20px] h-[20px] flex items-center justify-center rounded-md text-[#455871] hover:text-[#020617] transition-colors"
+      >
+        <ChevronDown
+          size={16}
+          strokeWidth={2}
+          className="transition-transform duration-200 ease-out"
+          style={{ transform: open ? "rotate(180deg)" : undefined }}
+        />
+      </button>
+      {open && typeof window !== "undefined" &&
+        createPortal(
+          <div
+            ref={dropdownRef}
+            onMouseEnter={show}
+            onMouseLeave={scheduleHide}
+            className="fixed z-[100] w-[180px] rounded-[12px] bg-white border border-[#e7ebf8] shadow-[0_8px_24px_rgba(15,41,77,0.10),0_2px_4px_rgba(15,41,77,0.04)] overflow-hidden"
+            style={{ top: pos.top, left: pos.left }}
+            role="menu"
+          >
+            <button
+              type="button"
+              role="menuitem"
+              onClick={() => {
+                setOpen(false);
+                router.push("/team-settings");
+              }}
+              className="w-full text-left px-4 py-3 text-[14px] text-[#020617] hover:bg-[#f5f5f7] transition-colors border-b border-[#f1f3f7]"
+            >
+              Team Settings
+            </button>
+            <button
+              type="button"
+              role="menuitem"
+              onClick={() => setOpen(false)}
+              className="w-full text-left px-4 py-3 text-[14px] text-[#020617] hover:bg-[#f5f5f7] transition-colors border-b border-[#f1f3f7]"
+            >
+              Invite Members
+            </button>
+            <button
+              type="button"
+              role="menuitem"
+              onClick={() => setOpen(false)}
+              className="w-full text-left px-4 py-3 text-[14px] text-[#ef4444] hover:bg-[#fef2f2] transition-colors"
+            >
+              Leave
+            </button>
+          </div>,
+          document.body,
+        )}
+    </>
+  );
+}
+
 /** Bottom-of-the-collapsed-menu "create" button. A circled +, sized
  *  to match the 36×36 nav-tab hit area. Hovering reveals a portal-
  *  rendered dropdown that bundles every "New X" action the expanded
@@ -609,7 +703,7 @@ function PinnedTab({ item }: { item: PinnedItem }) {
           aria-hidden
           className="opacity-0 group-hover/pin:opacity-100 transition-opacity w-[22px] h-[22px] rounded-[6px] flex items-center justify-center text-[#455871] hover:bg-[#c9d3e6]"
         >
-          <X size={14} strokeWidth={2.4} />
+          <PhosphorX size={14} weight="bold" />
         </span>
       </button>
       {pos && typeof window !== "undefined" &&
