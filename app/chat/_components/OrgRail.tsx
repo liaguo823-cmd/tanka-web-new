@@ -16,6 +16,7 @@
  * disappearing column doesn't leave the button floating.
  */
 
+import Link from "next/link";
 import { ChevronsLeft } from "lucide-react";
 import { useMenuCollapse, WORKSPACES, type WorkspaceId } from "./MenuContext";
 import { asset } from "../../_lib/asset";
@@ -85,15 +86,25 @@ export default function OrgRail() {
           </div>
         </div>
 
-        {/* Bottom: gear only — no user photo (the Menu has the photo). */}
+        {/* Bottom: gear only — links to /team-settings. Hovering
+            reveals a tooltip to the right of the icon since the
+            gear sits at the left edge of the viewport. */}
         <div className="flex items-center justify-center w-full">
-          <button
-            type="button"
-            aria-label="Settings"
-            className="size-[36px] flex items-center justify-center text-[#455871] hover:text-[#020617] rounded-md hover:bg-white/50 transition-colors"
-          >
-            <img alt="" className="block size-[20px]" src={imgNut} />
-          </button>
+          <div className="relative group/gear">
+            <Link
+              href="/team-settings"
+              aria-label="Team Settings"
+              className="size-[36px] flex items-center justify-center text-[#455871] hover:text-[#020617] rounded-md hover:bg-white/50 transition-colors"
+            >
+              <img alt="" className="block size-[20px]" src={imgNut} />
+            </Link>
+            <span
+              role="tooltip"
+              className="absolute left-full ml-2 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#020617] text-white text-[12px] font-medium px-2 py-1 opacity-0 pointer-events-none group-hover/gear:opacity-100 transition-opacity z-50"
+            >
+              Team Settings
+            </span>
+          </div>
         </div>
       </div>
     </div>
