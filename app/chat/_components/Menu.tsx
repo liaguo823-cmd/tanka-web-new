@@ -131,7 +131,17 @@ export default function Menu() {
         <div className="h-[72px] shrink-0 flex items-center w-full">
           {menuCollapsed ? (
             <div className="flex justify-center w-full">
-              <WorkspaceLogo workspace={activeWorkspace} />
+              {/* When the Menu is collapsed, the workspace logo is
+                  the OrgRail toggle: clicking it expands/collapses
+                  the workspace rail. Only active in collapsed mode. */}
+              <button
+                type="button"
+                onClick={toggle}
+                aria-label={collapsed ? "Expand workspace bar" : "Collapse workspace bar"}
+                className="rounded-[24px] hover:opacity-80 transition-opacity"
+              >
+                <WorkspaceLogo workspace={activeWorkspace} />
+              </button>
             </div>
           ) : (
             <div className="group/header flex items-center px-[14px] w-full relative">
@@ -222,7 +232,7 @@ export default function Menu() {
       <div
         className={`relative shrink-0 flex items-center w-full ${
           menuCollapsed
-            ? "flex-col gap-1 justify-center"
+            ? "flex-col gap-3 justify-center"
             : "px-[14px] justify-between"
         }`}
       >
@@ -231,7 +241,7 @@ export default function Menu() {
             type="button"
             onClick={toggleMenu}
             aria-label="Expand menu"
-            className="opacity-0 group-hover/menu:opacity-100 w-[28px] h-[28px] rounded-md flex items-center justify-center text-[#455871] hover:text-[#020617] hover:bg-white/60 transition-opacity"
+            className="w-[28px] h-[28px] rounded-md flex items-center justify-center text-[#455871] hover:text-[#020617] hover:bg-white/60 transition-colors"
           >
             <PanelLeftOpen size={18} strokeWidth={1.8} />
           </button>
@@ -403,13 +413,14 @@ function UserMenuPopup({
 
       {/* Settings + Log out rows */}
       <div className="py-2">
-        <button
-          type="button"
+        <Link
+          href="/settings"
+          onClick={onClose}
           className="w-full px-5 py-2.5 flex items-center gap-3 text-[14px] text-[#020617] hover:bg-[#f7f8fc] transition-colors"
         >
           <Settings size={18} strokeWidth={1.6} className="text-[#455871]" />
           Settings
-        </button>
+        </Link>
         <button
           type="button"
           className="w-full px-5 py-2.5 flex items-center gap-3 text-[14px] text-[#020617] hover:bg-[#f7f8fc] transition-colors"
