@@ -32,7 +32,13 @@ import {
   LogOut,
   ArrowRight,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState, type ComponentType } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ComponentType,
+} from "react";
 import { createPortal } from "react-dom";
 import {
   useMenuCollapse,
@@ -96,6 +102,58 @@ const APPS_NAV: NavItem[] = [
   { href: "/calendar", label: "Calendar", iconActive: asset("/figma/menu-calendar-active.svg"), iconInactive: asset("/figma/menu-calendar-inactive.svg"), plusModal: "calendar" },
 ];
 
+/* ---------------------------------------------------------------------- */
+/*  Module-level menuWidth store                                            */
+/*                                                                          */
+/*  Each page renders its own <Menu /> instance, so a per-component         */
+/*  useState would reset to MENU_WIDTH_EXPANDED every time the user         */
+/*  navigates between routes — annoying because they lose their collapsed   */
+/*  preference. Keep the value at the module scope and bridge it into       */
+/*  React with useSyncExternalStore so any Menu mount picks up the          */
+/*  current width. Also mirror to localStorage so the preference survives   */
+/*  reloads.                                                                */
+/* ---------------------------------------------------------------------- */
+
+const STORAGE_KEY = "tanka:menuWidth";
+let _menuWidth: number = MENU_WIDTH_EXPANDED;
+let _hydrated = false;
+const _subscribers = new Set<() => void>();
+
+function _readStored(): number {
+  if (typeof window === "undefined") return MENU_WIDTH_EXPANDED;
+  const raw = window.localStorage.getItem(STORAGE_KEY);
+  if (!raw) return MENU_WIDTH_EXPANDED;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : MENU_WIDTH_EXPANDED;
+}
+
+function _setMenuWidth(w: number) {
+  _menuWidth = w;
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, String(w));
+    } catch {
+      /* localStorage unavailable — ignore */
+    }
+  }
+  _subscribers.forEach((fn) => fn());
+}
+
+function _subscribe(callback: () => void) {
+  _subscribers.add(callback);
+  return () => {
+    _subscribers.delete(callback);
+  };
+}
+
+function _getSnapshot() {
+  return _menuWidth;
+}
+
+function _getServerSnapshot() {
+  return MENU_WIDTH_EXPANDED;
+}
+
 export default function Menu() {
   const pathname = usePathname() || "/";
   const isActive = (href: string) =>
@@ -104,10 +162,23 @@ export default function Menu() {
   // the cross-component re-renders are cheap.
   const { collapsed, toggle, activeWorkspace } = useMenuCollapse();
 
-  // Menu width is local: it ticks on every mousemove during drag,
-  // so keeping it out of the shared context prevents OrgRail and
-  // the sub-nav from re-rendering on every frame.
-  const [menuWidth, setMenuWidthRaw] = useState(MENU_WIDTH_EXPANDED);
+  // Menu width is shared at the module scope (see _menuWidth above) so
+  // it survives the per-page <Menu /> remount on navigation. Mirror
+  // it into a local useState via a subscription so only this Menu
+  // instance re-renders when the width changes.
+  const [menuWidth, setMenuWidthLocal] = useState(_menuWidth);
+  useEffect(() => {
+    // Hydrate from localStorage exactly once (avoids SSR mismatch).
+    if (!_hydrated) {
+      _hydrated = true;
+      const stored = _readStored();
+      if (stored !== _menuWidth) _setMenuWidth(stored);
+    }
+    // Sync local state with the current module value, then subscribe
+    // to future changes.
+    setMenuWidthLocal(_menuWidth);
+    return _subscribe(() => setMenuWidthLocal(_menuWidth));
+  }, []);
   const [dragging, setDragging] = useState(false);
   const menuCollapsed = menuWidth < MENU_COLLAPSE_THRESHOLD;
   // Snap-based drag: no awkward intermediate widths. Below the
@@ -117,14 +188,16 @@ export default function Menu() {
   const setMenuWidth = useCallback((w: number) => {
     if (Number.isNaN(w)) return;
     if (w < MENU_COLLAPSE_THRESHOLD) {
-      setMenuWidthRaw(MENU_WIDTH_COLLAPSED);
+      _setMenuWidth(MENU_WIDTH_COLLAPSED);
     } else {
-      setMenuWidthRaw(Math.max(MENU_WIDTH_EXPANDED, Math.min(MENU_WIDTH_MAX, w)));
+      _setMenuWidth(Math.max(MENU_WIDTH_EXPANDED, Math.min(MENU_WIDTH_MAX, w)));
     }
   }, []);
   const toggleMenu = useCallback(() => {
-    setMenuWidthRaw((w) =>
-      w < MENU_COLLAPSE_THRESHOLD ? MENU_WIDTH_EXPANDED : MENU_WIDTH_COLLAPSED,
+    _setMenuWidth(
+      _menuWidth < MENU_COLLAPSE_THRESHOLD
+        ? MENU_WIDTH_EXPANDED
+        : MENU_WIDTH_COLLAPSED,
     );
   }, []);
 
@@ -146,7 +219,7 @@ export default function Menu() {
   // transition so the menu tracks the cursor 1:1.
   return (
     <div
-      className={`group/menu backdrop-blur-[2px] bg-[#eef1f7] flex flex-col items-stretch justify-between pb-[16px] relative h-full shrink-0 overflow-hidden ${
+      className={`group/menu backdrop-blur-[2px] bg-[#eef1f7] flex flex-col items-stretch justify-between pb-[16px] relative h-full shrink-0 min-w-0 overflow-hidden ${
         dragging ? "" : "transition-[width] duration-300 ease-out"
       }`}
       style={{ width: menuWidth }}
@@ -214,9 +287,16 @@ export default function Menu() {
         {/* Top nav: Flow / Chat / Link. pb-[18px] (vs the natural
             pb-[16px]) lines up our inner divider with the OrgRail's
             short-line divider — accounting for our tabs being 36px
-            tall vs the rail's 38px tiles. */}
-        <div className="flex flex-col items-center pb-[18px] shrink-0 w-full">
-          <div className="flex flex-col gap-[6px] items-center">
+            tall vs the rail's 38px tiles.
+            Expanded: items-start + pl-[8px] keeps the tab icons at
+            the same x as the Tanka header logo regardless of column
+            width. Collapsed (60px): center the 36×36 tiles. */}
+        <div
+          className={`flex flex-col pb-[18px] shrink-0 w-full ${
+            menuCollapsed ? "items-center" : "items-start pl-[8px]"
+          }`}
+        >
+          <div className="flex flex-col gap-[6px]">
             {TOP_NAV.map((n) => (
               <NavTab
                 key={n.href}
@@ -235,17 +315,21 @@ export default function Menu() {
           }`}
         />
 
-        {/* Apps section */}
-        <div className="flex flex-col gap-[12px] items-center py-[12px] shrink-0 w-full">
+        {/* Apps section — same left-align rule as the top nav. */}
+        <div
+          className={`flex flex-col gap-[12px] py-[12px] shrink-0 w-full ${
+            menuCollapsed ? "items-center" : "items-start pl-[8px]"
+          }`}
+        >
           {!menuCollapsed && (
             <div
-              className={`${FONT_SF_PRO} font-[400] h-[17px] leading-[0] shrink-0 text-[#6f7f94] text-[12px] tracking-[0.48px] w-[138px]`}
+              className={`${FONT_SF_PRO} font-[400] h-[17px] leading-[0] shrink-0 text-[#6f7f94] text-[12px] tracking-[0.48px] w-[138px] pl-[6px]`}
               style={{ fontVariationSettings: "'wdth' 100" }}
             >
               <p className="leading-[21.6px]">Apps</p>
             </div>
           )}
-          <div className="flex flex-col gap-[6px] items-center">
+          <div className="flex flex-col gap-[6px]">
             {APPS_NAV.map((n) => (
               <NavTab
                 key={n.href}
@@ -660,7 +744,7 @@ function NavTab({
     <div ref={wrapRef} className="relative">
       <Link
         href={item.href}
-        className={`${bg} group/tab flex flex-col items-center justify-center px-[6px] relative rounded-[8px] shrink-0 w-[156px] h-[36px] cursor-pointer transition-colors`}
+        className={`${bg} group/tab flex flex-col items-start justify-center px-[6px] relative rounded-[8px] shrink-0 w-[156px] h-[36px] cursor-pointer transition-colors`}
         data-name="tab"
       >
         <div className="flex gap-[12px] items-center relative shrink-0 w-[139px]">
