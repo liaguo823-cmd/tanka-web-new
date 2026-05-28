@@ -186,7 +186,7 @@ function GearTooltipLink({
         onMouseLeave={hide}
         onFocus={show}
         onBlur={hide}
-        className="size-[36px] flex items-center justify-center text-[#455871] hover:text-[#020617] rounded-md hover:bg-white/50 transition-colors"
+        className="size-[32px] flex items-center justify-center text-[#455871] hover:text-[#020617] rounded-md hover:bg-white/50 transition-colors"
       >
         {children}
       </Link>

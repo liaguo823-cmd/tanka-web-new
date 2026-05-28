@@ -23,15 +23,18 @@ import {
 } from "lucide-react";
 import OrgRail from "../chat/_components/OrgRail";
 import Menu, { ResizeHandle } from "../chat/_components/Menu";
+import { asset } from "../_lib/asset";
 
 const FONT =
   '"SF Pro", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
+
+const imgTankaMark = asset("/figma/tanka-mark.svg");
 
 const SUBNAV_MIN_VISIBLE = 280;
 const SUBNAV_MAX = 600;
 const SUBNAV_DEFAULT = 376;
 
-const TEAM_NAME = "lia";
+const TEAM_NAME = "Tanka";
 const TEAM_ID = "6485517";
 const MEMBERS_USED = 1;
 const MEMBERS_TOTAL = 50;
@@ -113,8 +116,13 @@ function TeamSettingsSidebar({
       <div className="flex-1 overflow-y-auto scrollbar-thin px-5 pt-5 pb-6 flex flex-col gap-4">
         {/* Avatar + team name + ID */}
         <div className="flex flex-col items-center gap-2 pt-2">
-          <div className="size-[72px] rounded-full bg-[#6d28d9] flex items-center justify-center shadow-[0_2px_8px_rgba(109,40,217,0.25)]">
-            <span className="text-white text-[28px] font-semibold">L</span>
+          <div className="size-[72px] rounded-full bg-white flex items-center justify-center shadow-[0_2px_8px_rgba(15,41,77,0.06)]">
+            <img
+              src={imgTankaMark}
+              alt=""
+              className="block"
+              style={{ width: 44, height: 38 }}
+            />
           </div>
           <div className="flex items-center gap-1.5">
             <p className="text-[16px] font-semibold text-[#020617]">{TEAM_NAME}</p>
