@@ -31,7 +31,6 @@ import {
   Settings,
   LogOut,
   ArrowRight,
-  FileText,
   PlusCircle,
   ChevronDown,
 } from "lucide-react";
@@ -62,6 +61,7 @@ import {
 import { asset } from "../../_lib/asset";
 
 const imgPhoto = asset("/figma/user-photo.png");
+const imgPinnedDoc = asset("/figma/menu-pinned-doc.svg");
 const imgTankaMark = asset("/figma/tanka-mark-menu.svg");
 const imgT = asset("/figma/t-letter.svg");
 const imgX = asset("/figma/org-x.svg");
@@ -402,9 +402,12 @@ export default function Menu() {
         {/* Collapsed-only: short divider + circled-+ create button
             at the bottom of the icon column. Hovering the + reveals
             a portal dropdown with all the "New X" actions that the
-            expanded NavTab's + buttons handle individually. */}
+            expanded NavTab's + buttons handle individually.
+            gap-[12px] both above and below the divider keeps the
+            spacing symmetric (12 from Apps' py-[12px] above, 12 to
+            the create button below). */}
         {menuCollapsed && (
-          <div className="flex flex-col items-center gap-[8px] shrink-0 w-full pt-[6px] pb-[12px]">
+          <div className="flex flex-col items-center gap-[12px] shrink-0 w-full pb-[6px]">
             <div className="bg-[#d0dae8] h-px w-[28px]" />
             <CollapsedCreateButton />
           </div>
@@ -692,7 +695,7 @@ function PinnedTab({ item }: { item: PinnedItem }) {
         className="group/pin flex items-center gap-[12px] px-[6px] h-[36px] w-full rounded-[8px] hover:bg-[#d8dfed]/50 transition-colors"
       >
         <span className="size-[24px] shrink-0 flex items-center justify-center">
-          <FileText size={18} strokeWidth={1.8} className="text-[#3b82f6]" />
+          <img alt="" src={imgPinnedDoc} className="block w-[20px] h-[20px]" />
         </span>
         <span
           className={`${FONT_SF_PRO} font-[400] text-[15px] leading-[21px] text-[#455871] truncate flex-1 text-left`}
