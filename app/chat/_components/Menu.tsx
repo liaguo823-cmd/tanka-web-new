@@ -370,6 +370,14 @@ export default function Menu() {
           </div>
         </div>
 
+        {/* Divider between Apps and Pinned — same style as the
+            Top-nav/Apps divider. The mt-[6px] compensates for the
+            Apps section ending with py-[12px] (vs the top nav's
+            pb-[18px]) so the Apps→Pinned gap matches Link→Apps. */}
+        {!menuCollapsed && (
+          <div className="bg-[#d0dae8] h-px shrink-0 self-stretch mx-[14px] mt-[6px]" />
+        )}
+
         {/* Pinned — bottom half of the menu in expanded mode. Each
             item is a small doc shortcut with a tooltip showing the
             full title. Hidden in collapsed mode (no room for labels). */}
