@@ -309,7 +309,7 @@ export default function ChatC() {
                           <p className="leading-[20px] mb-0 text-[14px]">{`The project deadline has been moved to Friday, 5 PM. Please make sure to finalize your `}</p>
                           <p className="leading-[20px] text-[14px]">If you have any blockers, let me know ASAP!</p>
                         </div>
-                        <div className="content-stretch flex flex-col items-start relative shrink-0 size-[54px]" data-node-id="I3:8054;1374:33466;1452:114666;1452:65054" data-name="Image&video">
+                        <div className="content-stretch flex flex-col items-start overflow-hidden relative shrink-0 size-[54px] rounded-[6px]" data-node-id="I3:8054;1374:33466;1452:114666;1452:65054" data-name="Image&video">
                           <div className="content-stretch flex flex-col items-start overflow-clip relative rounded-[6px] shrink-0 w-full" data-node-id="I3:8054;1374:33466;1452:114666;1452:65054;1445:25045" data-name="Image">
                             <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[6px] size-full" src={imgImage1} />
                             <div className="flex h-[240.001px] items-center justify-center relative shrink-0 w-full">
