@@ -252,7 +252,7 @@ export default function ChatA() {
           </div>
 
           {/* Row 3: AI Innovation Hub — DEFAULT SELECTED row */}
-          <div className="bg-[rgba(227,232,242,0.6)] content-stretch flex gap-[15px] h-[72px] items-center px-[15px] py-[12px] relative shrink-0 w-full cursor-pointer" data-node-id="3:7797" data-name="Content">
+          <div className="bg-[#e7eefd] content-stretch flex gap-[15px] h-[72px] items-center px-[15px] py-[12px] relative shrink-0 w-full cursor-pointer" data-node-id="3:7797" data-name="Content">
             <div className="content-stretch flex flex-col items-end justify-center relative shrink-0 size-[48px]" data-node-id="3:7798" data-name="头像">
               <div className="relative shrink-0 size-[48px]" data-node-id="3:7799" data-name="默认">
                 <div className="absolute bg-[#00b1d1] left-[14.4px] opacity-30 rounded-[385.701px] size-[38.4px] top-[0px]" data-node-id="3:7800" data-name="Avatar" />
