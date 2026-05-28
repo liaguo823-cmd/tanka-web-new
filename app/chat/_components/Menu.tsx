@@ -181,8 +181,11 @@ export default function Menu() {
           )}
         </div>
 
-        {/* Top nav: Flow / Chat / Link */}
-        <div className="flex flex-col items-center pb-[16px] shrink-0 w-full">
+        {/* Top nav: Flow / Chat / Link. pb-[18px] (vs the natural
+            pb-[16px]) lines up our inner divider with the OrgRail's
+            short-line divider — accounting for our tabs being 36px
+            tall vs the rail's 38px tiles. */}
+        <div className="flex flex-col items-center pb-[18px] shrink-0 w-full">
           <div className="flex flex-col gap-[6px] items-center">
             {TOP_NAV.map((n) => (
               <NavTab
@@ -290,6 +293,66 @@ export default function Menu() {
         onClose={() => setUserMenuOpen(false)}
       />
     </div>
+  );
+}
+
+/** Icon-only nav tile (rendered when the Menu is collapsed) with a
+ *  portal-rendered tooltip showing the item's label on hover/focus.
+ *  Portal-positioning keeps the tooltip visible even though the
+ *  Menu's outer wrapper has overflow-hidden for the resize animation. */
+function CollapsedNavTab({
+  href,
+  label,
+  active,
+  bg,
+  icon,
+}: {
+  href: string;
+  label: string;
+  active: boolean;
+  bg: string;
+  icon: React.ReactNode;
+}) {
+  const linkRef = useRef<HTMLAnchorElement>(null);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+
+  function show() {
+    if (!linkRef.current) return;
+    const r = linkRef.current.getBoundingClientRect();
+    setPos({ top: r.top + r.height / 2, left: r.right + 8 });
+  }
+  function hide() {
+    setPos(null);
+  }
+
+  return (
+    <>
+      <Link
+        ref={linkRef}
+        href={href}
+        aria-label={label}
+        aria-pressed={active}
+        onMouseEnter={show}
+        onMouseLeave={hide}
+        onFocus={show}
+        onBlur={hide}
+        className={`${bg} flex items-center justify-center w-[36px] h-[36px] rounded-[8px] transition-colors`}
+        data-name="tab-collapsed"
+      >
+        {icon}
+      </Link>
+      {pos && typeof window !== "undefined" &&
+        createPortal(
+          <div
+            role="tooltip"
+            className="fixed z-[100] -translate-y-1/2 whitespace-nowrap rounded-md bg-[#020617] text-white text-[12px] font-medium px-2 py-1 pointer-events-none shadow-[0_2px_8px_rgba(15,41,77,0.15)]"
+            style={{ top: pos.top, left: pos.left }}
+          >
+            {label}
+          </div>,
+          document.body,
+        )}
+    </>
   );
 }
 
@@ -548,18 +611,16 @@ function NavTab({
   const hasPlus = Boolean(item.plusItems || item.plusModal || item.plusGoesToHref);
 
   // Collapsed: centered 36×36 icon tile, no label, no plus button.
+  // Label is shown via a portal tooltip on hover/focus.
   if (collapsed) {
     return (
-      <div ref={wrapRef} className="relative">
-        <Link
-          href={item.href}
-          aria-label={item.label}
-          className={`${bg} flex items-center justify-center w-[36px] h-[36px] rounded-[8px] transition-colors`}
-          data-name="tab-collapsed"
-        >
-          <NavIconRender item={item} active={active} />
-        </Link>
-      </div>
+      <CollapsedNavTab
+        href={item.href}
+        label={item.label}
+        active={active}
+        bg={bg}
+        icon={<NavIconRender item={item} active={active} />}
+      />
     );
   }
 
