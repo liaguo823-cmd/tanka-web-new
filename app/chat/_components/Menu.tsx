@@ -599,7 +599,7 @@ function CollapsedPinnedButton() {
         aria-label="Pinned docs"
         className="w-[36px] h-[36px] flex items-center justify-center rounded-[8px] text-[#455871] hover:text-[#020617] hover:bg-[#d8dfed]/50 transition-colors"
       >
-        <Pin size={20} strokeWidth={1.8} />
+        <Pin size={22} strokeWidth={1.8} />
       </button>
       {open && typeof window !== "undefined" &&
         createPortal(
