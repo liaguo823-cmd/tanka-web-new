@@ -33,6 +33,7 @@ import {
   ArrowRight,
   PlusCircle,
   ChevronDown,
+  Pin,
 } from "lucide-react";
 import {
   useCallback,
@@ -615,16 +616,19 @@ function CollapsedPinnedButton() {
         }`}
       >
         <span className="grid place-items-center">
-          {/* Outline pushpin — visible until clicked. Tilts on hover
-              via the rule in globals.css keyed off data-pin. */}
-          <PushPin
+          {/* Outline pushpin — visible until clicked. Lucide's Pin is
+              drawn purely vertical (no built-in lean), so the idle
+              state reads as upright. Tilts to 30° on hover via the
+              rule in globals.css keyed off data-pin. */}
+          <Pin
             size={22}
-            weight="regular"
+            strokeWidth={1.8}
             data-pin="outline"
             className="col-start-1 row-start-1"
             style={{ opacity: open ? 0 : 1 }}
           />
-          {/* Filled pushpin — only while open; always tilted 30°. */}
+          {/* Filled pushpin — only while open; always tilted 30°.
+              Phosphor's filled PushPin matches the design spec. */}
           <PushPin
             size={22}
             weight="fill"
