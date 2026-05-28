@@ -56,7 +56,7 @@ export default function OrgRail() {
               type="button"
               onClick={toggle}
               aria-label="Collapse workspace bar"
-              className="w-[28px] h-[28px] flex items-center justify-center rounded-md text-[#455871] hover:text-[#020617] hover:bg-white/60"
+              className="w-[28px] h-[28px] flex items-center justify-center rounded-md text-[#455871] hover:text-[#020617] hover:bg-[#d8dfed]/50"
             >
               <ChevronsLeft size={18} strokeWidth={1.8} />
             </button>
@@ -82,7 +82,7 @@ export default function OrgRail() {
             <button
               type="button"
               aria-label="Add workspace"
-              className="rounded-full size-[32px] flex items-center justify-center border-2 border-dashed border-[#cbd5e1] text-[#8793ab] bg-transparent hover:bg-white/60 hover:border-[#8793ab] hover:text-[#475569] transition-colors"
+              className="rounded-full size-[32px] flex items-center justify-center border-2 border-dashed border-[#cbd5e1] text-[#8793ab] bg-transparent hover:bg-[#d8dfed]/50 hover:border-[#8793ab] hover:text-[#475569] transition-colors"
             >
               <Plus size={16} strokeWidth={2} />
             </button>
@@ -187,7 +187,7 @@ function GearTooltipLink({
         onMouseLeave={hide}
         onFocus={show}
         onBlur={hide}
-        className="size-[32px] flex items-center justify-center text-[#455871] hover:text-[#020617] rounded-md hover:bg-white/50 transition-colors"
+        className="size-[32px] flex items-center justify-center text-[#455871] hover:text-[#020617] rounded-md hover:bg-[#d8dfed]/50 transition-colors"
       >
         {children}
       </Link>

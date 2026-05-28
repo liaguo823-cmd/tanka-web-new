@@ -33,6 +33,7 @@ import {
   ArrowRight,
   PlusCircle,
   ChevronDown,
+  Pin,
 } from "lucide-react";
 import {
   useCallback,
@@ -276,7 +277,7 @@ export default function Menu() {
                   type="button"
                   onClick={toggle}
                   aria-label="Expand workspace bar"
-                  className="absolute left-[14px] top-1/2 -translate-y-1/2 opacity-0 group-hover/header:opacity-100 transition-opacity w-[28px] h-[28px] flex items-center justify-center rounded-md text-[#455871] hover:text-[#020617] hover:bg-white/60"
+                  className="absolute left-[14px] top-1/2 -translate-y-1/2 opacity-0 group-hover/header:opacity-100 transition-opacity w-[28px] h-[28px] flex items-center justify-center rounded-md text-[#455871] hover:text-[#020617] hover:bg-[#d8dfed]/50"
                 >
                   <ChevronsLeft
                     size={18}
@@ -410,6 +411,7 @@ export default function Menu() {
           <div className="flex flex-col items-center gap-[12px] shrink-0 w-full pb-[6px]">
             <div className="bg-[#d0dae8] h-px w-[28px]" />
             <CollapsedCreateButton />
+            <CollapsedPinnedButton />
           </div>
         )}
       </div>
@@ -426,36 +428,35 @@ export default function Menu() {
         }`}
       >
         {menuCollapsed && (
-          <button
-            type="button"
+          <IconWithTooltip
+            label="Expand menu"
             onClick={toggleMenu}
-            aria-label="Expand menu"
-            className="w-[28px] h-[28px] rounded-md flex items-center justify-center text-[#455871] hover:text-[#020617] hover:bg-white/60 transition-colors"
+            className="w-[28px] h-[28px] rounded-md flex items-center justify-center text-[#455871] hover:text-[#020617] hover:bg-[#d8dfed]/50 transition-colors"
           >
             <PanelLeftOpen size={18} strokeWidth={1.8} />
-          </button>
+          </IconWithTooltip>
         )}
-        <button
-          ref={photoBtnRef}
-          type="button"
+        <IconWithTooltip
+          label="Yiran Guo"
+          refOuter={photoBtnRef}
           onClick={() => photoBtnRef.current && openUserMenu(photoBtnRef.current)}
-          aria-label="Open user menu"
+          showTooltip={menuCollapsed}
           className="relative rounded-full shrink-0 size-[36px] overflow-hidden focus:outline-none focus:ring-2 focus:ring-[rgba(0,94,255,0.4)]"
-          data-name="Photo"
+          dataName="Photo"
         >
           <img
             alt=""
             className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-full size-full"
             src={imgPhoto}
           />
-        </button>
+        </IconWithTooltip>
         {!menuCollapsed && (
           <button
             ref={foldBtnRef}
             type="button"
             onClick={toggleMenu}
             aria-label="Collapse menu"
-            className="opacity-0 group-hover/menu:opacity-100 w-[28px] h-[28px] rounded-md flex items-center justify-center text-[#455871] hover:text-[#020617] hover:bg-white/60 transition-opacity"
+            className="opacity-0 group-hover/menu:opacity-100 w-[28px] h-[28px] rounded-md flex items-center justify-center text-[#455871] hover:text-[#020617] hover:bg-[#d8dfed]/50 transition-opacity"
           >
             <PanelLeftClose size={18} strokeWidth={1.8} />
           </button>
@@ -479,6 +480,163 @@ export default function Menu() {
         onClose={() => setUserMenuOpen(false)}
       />
     </div>
+  );
+}
+
+/** Small button helper that exposes a portal-rendered tooltip on
+ *  hover/focus. Lets us add the same tooltip pattern to multiple
+ *  collapsed-menu chrome icons (expand toggle, photo, etc.) without
+ *  duplicating state. `refOuter` is forwarded so callers can still
+ *  measure the rendered element for popovers. */
+function IconWithTooltip({
+  label,
+  onClick,
+  refOuter,
+  showTooltip = true,
+  className,
+  dataName,
+  children,
+}: {
+  label: string;
+  onClick?: () => void;
+  refOuter?: React.RefObject<HTMLButtonElement | null>;
+  /** Hide tooltip in certain layouts (e.g. when the label is
+   *  already visible next to the icon). Default: true. */
+  showTooltip?: boolean;
+  className: string;
+  dataName?: string;
+  children: React.ReactNode;
+}) {
+  const localRef = useRef<HTMLButtonElement>(null);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+
+  function anchor() {
+    return refOuter?.current ?? localRef.current;
+  }
+  function show() {
+    if (!showTooltip) return;
+    const el = anchor();
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    setPos({ top: r.top + r.height / 2, left: r.right + 8 });
+  }
+  function hide() {
+    setPos(null);
+  }
+
+  return (
+    <>
+      <button
+        ref={(node) => {
+          localRef.current = node;
+          if (refOuter) refOuter.current = node;
+        }}
+        type="button"
+        aria-label={label}
+        onClick={() => {
+          hide();
+          onClick?.();
+        }}
+        onMouseEnter={show}
+        onMouseLeave={hide}
+        onFocus={show}
+        onBlur={hide}
+        className={className}
+        data-name={dataName}
+      >
+        {children}
+      </button>
+      {pos && typeof window !== "undefined" &&
+        createPortal(
+          <div
+            role="tooltip"
+            className="fixed z-[100] -translate-y-1/2 whitespace-nowrap rounded-md bg-[#020617] text-white text-[12px] font-medium px-2 py-1 pointer-events-none shadow-[0_2px_8px_rgba(15,41,77,0.15)]"
+            style={{ top: pos.top, left: pos.left }}
+          >
+            {label}
+          </div>,
+          document.body,
+        )}
+    </>
+  );
+}
+
+/** Collapsed-menu pinned-docs button. Pushpin glyph; on hover
+ *  opens a portal dropdown listing the same PINNED items the
+ *  expanded section renders inline. */
+function CollapsedPinnedButton() {
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const closeTimer = useRef<number | null>(null);
+
+  function show() {
+    if (closeTimer.current !== null) {
+      window.clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+    if (btnRef.current) {
+      const r = btnRef.current.getBoundingClientRect();
+      setPos({ top: r.top - 8, left: r.right + 12 });
+    }
+    setOpen(true);
+  }
+  function scheduleHide() {
+    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
+    closeTimer.current = window.setTimeout(() => setOpen(false), 180);
+  }
+
+  return (
+    <>
+      <button
+        ref={btnRef}
+        type="button"
+        onMouseEnter={show}
+        onMouseLeave={scheduleHide}
+        onFocus={show}
+        onBlur={scheduleHide}
+        aria-label="Pinned docs"
+        className="w-[36px] h-[36px] flex items-center justify-center rounded-[8px] text-[#455871] hover:text-[#020617] hover:bg-[#d8dfed]/50 transition-colors"
+      >
+        <Pin size={20} strokeWidth={1.8} />
+      </button>
+      {open && typeof window !== "undefined" &&
+        createPortal(
+          <div
+            ref={dropdownRef}
+            onMouseEnter={show}
+            onMouseLeave={scheduleHide}
+            className="fixed z-[100] w-[240px] rounded-[12px] bg-white border border-[#e7ebf8] shadow-[0_8px_24px_rgba(15,41,77,0.10),0_2px_4px_rgba(15,41,77,0.04)] overflow-hidden"
+            style={{ top: pos.top, left: pos.left }}
+            role="menu"
+          >
+            <div className="px-3 pt-2.5 pb-1 text-[12px] text-[#8793ab] uppercase tracking-wide">
+              Pinned
+            </div>
+            {PINNED.map((item, i) => (
+              <button
+                key={item.fullName}
+                type="button"
+                role="menuitem"
+                aria-label={item.fullName}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setOpen(false);
+                }}
+                className={`w-full text-left flex items-center gap-3 px-3 py-2.5 text-[14px] text-[#020617] hover:bg-[#f5f5f7] transition-colors ${
+                  i !== PINNED.length - 1 ? "border-b border-[#f1f3f7]" : ""
+                }`}
+              >
+                <img alt="" src={imgPinnedDoc} className="block w-[18px] h-[18px] shrink-0" />
+                <span className="truncate">{item.shortName}</span>
+              </button>
+            ))}
+          </div>,
+          document.body,
+        )}
+    </>
   );
 }
 
