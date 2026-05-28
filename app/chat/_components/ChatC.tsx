@@ -515,12 +515,6 @@ export default function ChatC() {
           </div>
         </div>
       </div>
-      <div className="absolute border-[0.667px] border-[rgba(15,41,77,0.05)] border-solid left-[1057px] rounded-[171.257px] size-[24px] top-[18px]" data-node-id="3:8112" data-name="image 11">
-        <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[171.257px] size-full" src={imgImage11} />
-      </div>
-      <div className="absolute border-[0.667px] border-[rgba(15,41,77,0.05)] border-solid left-[38px] rounded-[171.257px] size-[24px] top-[870px]" data-node-id="3:8113" data-name="image 12">
-        <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[171.257px] size-full" src={imgImage11} />
-      </div>
     </div>
   );
 }

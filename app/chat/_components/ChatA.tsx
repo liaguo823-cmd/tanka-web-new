@@ -785,7 +785,7 @@ export default function ChatA() {
           {/* Row 13: Test Group (overlapping dual avatar 5+6, pin icon, gray badge "9") - node 3:8042 */}
           <div className="content-stretch flex items-center justify-end overflow-clip relative shrink-0 w-full hover:bg-[#eff2fb] cursor-pointer transition-colors" data-node-id="3:8042" data-name="messages row">
             <div className="content-stretch flex flex-[1_0_0] flex-col items-start justify-center min-w-px relative" data-node-id="I3:8042;1040:34748" data-name="Content">
-              <div className="bg-[#fdfefe] content-stretch flex gap-[15px] h-[72px] items-center px-[15px] py-[12px] relative shrink-0 w-full" data-node-id="I3:8042;8:12823" data-name="Content">
+              <div className="content-stretch flex gap-[15px] h-[72px] items-center px-[15px] py-[12px] relative shrink-0 w-full" data-node-id="I3:8042;8:12823" data-name="Content">
                 <div className="relative shrink-0 size-[48px]" data-node-id="I3:8042;1054:46235" data-name="Avatar">
                   <div className="absolute inset-[0_0_33.33%_33.33%] overflow-clip rounded-[1498.5px]" data-node-id="I3:8042;1054:46235;1085:40809" data-name="Avatar Example">
                     <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgAvatarExample4} />
@@ -846,7 +846,7 @@ export default function ChatA() {
           {/* Row 14: Benjamin Carter (white surface, photo avatar 2) - node 3:8043 */}
           <div className="content-stretch flex items-center justify-end overflow-clip relative shrink-0 w-full hover:bg-[#eff2fb] cursor-pointer transition-colors" data-node-id="3:8043" data-name="messages row">
             <div className="content-stretch flex flex-[1_0_0] flex-col items-start justify-center min-w-px relative" data-node-id="I3:8043;1040:34748" data-name="Content">
-              <div className="bg-[#fdfefe] content-stretch flex gap-[15px] h-[72px] items-center px-[15px] py-[12px] relative shrink-0 w-full" data-node-id="I3:8043;8:12823" data-name="Content">
+              <div className="content-stretch flex gap-[15px] h-[72px] items-center px-[15px] py-[12px] relative shrink-0 w-full" data-node-id="I3:8043;8:12823" data-name="Content">
                 <div className="overflow-clip relative rounded-[999px] shrink-0 size-[48px]" data-node-id="I3:8043;1054:46235" data-name="Avatar">
                   <div className="absolute inset-0 overflow-clip rounded-[999px]" data-node-id="I3:8043;1054:46235;1085:40500" data-name="Avatar Example">
                     <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgAvatarExample1} />
@@ -892,7 +892,7 @@ export default function ChatA() {
           {/* Row 15: Abigail Smith (white surface, photo avatar 3, "Yesterday") - node 3:8044 */}
           <div className="content-stretch flex items-center justify-end overflow-clip relative shrink-0 w-full hover:bg-[#eff2fb] cursor-pointer transition-colors" data-node-id="3:8044" data-name="messages row">
             <div className="content-stretch flex flex-[1_0_0] flex-col items-start justify-center min-w-px relative" data-node-id="I3:8044;1040:34748" data-name="Content">
-              <div className="bg-[#fdfefe] content-stretch flex gap-[15px] h-[72px] items-center px-[15px] py-[12px] relative shrink-0 w-full" data-node-id="I3:8044;8:12823" data-name="Content">
+              <div className="content-stretch flex gap-[15px] h-[72px] items-center px-[15px] py-[12px] relative shrink-0 w-full" data-node-id="I3:8044;8:12823" data-name="Content">
                 <div className="overflow-clip relative rounded-[999px] shrink-0 size-[48px]" data-node-id="I3:8044;1054:46235" data-name="Avatar">
                   <div className="absolute inset-0 overflow-clip rounded-[999px]" data-node-id="I3:8044;1054:46235;1085:40500" data-name="Avatar Example">
                     <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgAvatarExample2} />
