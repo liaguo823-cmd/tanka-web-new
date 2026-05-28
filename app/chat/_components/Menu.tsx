@@ -276,7 +276,7 @@ export default function Menu() {
                   type="button"
                   onClick={toggle}
                   aria-label="Expand workspace bar"
-                  className="absolute left-[14px] top-1/2 -translate-y-1/2 opacity-0 group-hover/header:opacity-100 transition-opacity w-[28px] h-[28px] flex items-center justify-center rounded-md text-[#455871] hover:text-[#020617] hover:bg-[#d8dfed]/50"
+                  className="absolute left-[14px] top-1/2 -translate-y-1/2 opacity-0 group-hover/header:opacity-100 transition-opacity w-[28px] h-[28px] flex items-center justify-center rounded-md text-[#455871] hover:text-[#020617] hover:bg-[#E3E8F2]"
                 >
                   <ChevronsLeft
                     size={18}
@@ -430,7 +430,7 @@ export default function Menu() {
           <IconWithTooltip
             label="Expand menu"
             onClick={toggleMenu}
-            className="w-[28px] h-[28px] rounded-md flex items-center justify-center text-[#455871] hover:text-[#020617] hover:bg-[#d8dfed]/50 transition-colors"
+            className="w-[28px] h-[28px] rounded-md flex items-center justify-center text-[#455871] hover:text-[#020617] hover:bg-[#E3E8F2] transition-colors"
           >
             <PanelLeftOpen size={18} strokeWidth={1.8} />
           </IconWithTooltip>
@@ -455,7 +455,7 @@ export default function Menu() {
             type="button"
             onClick={toggleMenu}
             aria-label="Collapse menu"
-            className="opacity-0 group-hover/menu:opacity-100 w-[28px] h-[28px] rounded-md flex items-center justify-center text-[#455871] hover:text-[#020617] hover:bg-[#d8dfed]/50 transition-opacity"
+            className="opacity-0 group-hover/menu:opacity-100 w-[28px] h-[28px] rounded-md flex items-center justify-center text-[#455871] hover:text-[#020617] hover:bg-[#E3E8F2] transition-opacity"
           >
             <PanelLeftClose size={18} strokeWidth={1.8} />
           </button>
@@ -596,7 +596,7 @@ function CollapsedPinnedButton() {
         onFocus={show}
         onBlur={scheduleHide}
         aria-label="Pinned docs"
-        className="group/pin w-[36px] h-[36px] flex items-center justify-center rounded-[8px] text-[#455871] hover:text-[#35394C] hover:bg-[#d8dfed]/50 transition-colors"
+        className="group/pin w-[36px] h-[36px] flex items-center justify-center rounded-[8px] text-[#455871] hover:text-[#35394C] hover:bg-[#E3E8F2] transition-colors"
       >
         <span className="grid place-items-center">
           <PushPin
@@ -690,7 +690,7 @@ function WorkspaceMenuButton() {
         onBlur={scheduleHide}
         aria-label="Workspace menu"
         aria-expanded={open}
-        className="w-[24px] h-[24px] flex items-center justify-center rounded-md text-[#455871] hover:text-[#020617] hover:bg-[#c9d3e6] transition-colors"
+        className="w-[24px] h-[24px] flex items-center justify-center rounded-md text-[#455871] hover:text-[#020617] hover:bg-[#E3E8F2] transition-colors"
       >
         <ChevronDown
           size={18}
@@ -791,7 +791,7 @@ function CollapsedCreateButton() {
         onFocus={show}
         onBlur={scheduleHide}
         aria-label="Create new"
-        className="w-[36px] h-[36px] flex items-center justify-center rounded-[8px] text-[#455871] hover:text-[#020617] hover:bg-[#d8dfed]/50 transition-colors"
+        className="w-[36px] h-[36px] flex items-center justify-center rounded-[8px] text-[#455871] hover:text-[#020617] hover:bg-[#E3E8F2] transition-colors"
       >
         <PlusCircle size={22} strokeWidth={1.6} />
       </button>
@@ -860,7 +860,7 @@ function PinnedTab({ item }: { item: PinnedItem }) {
         onMouseLeave={hide}
         onFocus={show}
         onBlur={hide}
-        className="group/pin flex items-center gap-[12px] px-[6px] h-[36px] w-full rounded-[8px] hover:bg-[#d8dfed]/50 transition-colors"
+        className="group/pin flex items-center gap-[12px] px-[6px] h-[36px] w-full rounded-[8px] hover:bg-[#E3E8F2] transition-colors"
       >
         <span className="size-[24px] shrink-0 flex items-center justify-center">
           <img alt="" src={imgPinnedDoc} className="block w-[20px] h-[20px]" />
@@ -1158,7 +1158,7 @@ function NavTab({
   active: boolean;
   collapsed: boolean;
 }) {
-  const bg = active ? "bg-[#d8dfed]" : "hover:bg-[#d8dfed]/50";
+  const bg = active ? "bg-[#d8dfed]" : "hover:bg-[#E3E8F2]";
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
