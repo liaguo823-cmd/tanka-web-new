@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
+import { MenuProvider } from "./chat/_components/MenuContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,7 +43,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${sourceSerif.variable} h-full antialiased`}
     >
       <body className="min-h-screen bg-warm-bg-2 text-warm-black overflow-hidden">
-        {children}
+        <MenuProvider>{children}</MenuProvider>
       </body>
     </html>
   );

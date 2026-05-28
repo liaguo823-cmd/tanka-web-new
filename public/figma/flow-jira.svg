@@ -1,0 +1,17 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="jira-3 1">
+<path id="Vector" d="M23.1411 11.3362L12.9364 1.13153L11.9475 0.142717L4.26569 7.82457L0.752958 11.3362C0.577499 11.5126 0.479003 11.7513 0.479003 12C0.479003 12.2488 0.577499 12.4875 0.752958 12.6638L7.77101 19.6819L11.9475 23.8574L19.6283 16.1755L19.748 16.0569L23.1411 12.6691C23.229 12.5818 23.2988 12.478 23.3464 12.3636C23.394 12.2493 23.4186 12.1266 23.4186 12.0027C23.4186 11.8788 23.394 11.7561 23.3464 11.6417C23.2988 11.5274 23.229 11.4235 23.1411 11.3362ZM11.9475 15.5064L8.44116 12L11.9475 8.49366L15.4529 12L11.9475 15.5064Z" fill="var(--fill-0, #2684FF)"/>
+<path id="Vector_2" d="M11.9475 8.49354C10.8448 7.39104 10.2231 5.89694 10.2184 4.3376C10.2136 2.77826 10.8261 1.28039 11.9221 0.171177L4.2498 7.84033L8.42527 12.0158L11.9475 8.49354Z" fill="url(#paint0_linear_0_1865)"/>
+<path id="Vector_3" d="M15.4621 11.9904L11.9473 15.5063C13.0542 16.6135 13.676 18.1151 13.676 19.6807C13.676 21.2463 13.0542 22.7479 11.9473 23.8551L19.6408 16.1658L15.4621 11.9904Z" fill="url(#paint1_linear_0_1865)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_1865" x1="11.3197" y1="4.94587" x2="6.42329" y2="9.84125" gradientUnits="userSpaceOnUse">
+<stop offset="0.18" stop-color="#0052CC"/>
+<stop offset="1" stop-color="#2684FF"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_1865" x1="12.6164" y1="19.0116" x2="17.5033" y2="14.1258" gradientUnits="userSpaceOnUse">
+<stop offset="0.18" stop-color="#0052CC"/>
+<stop offset="1" stop-color="#2684FF"/>
+</linearGradient>
+</defs>
+</svg>

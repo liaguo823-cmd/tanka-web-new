@@ -4,8 +4,9 @@
     {
       "name": "tanka-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 3000
+      "runtimeArgs": ["run", "dev", "--", "--port", "56700"],
+      "port": 56700,
+      "autoPort": true
     },
     {
       "name": "tanka-old",

@@ -1,0 +1,532 @@
+"use client";
+
+/**
+ * Flow page — same chrome (OrgRail + Menu) as /chat, with Flow as the
+ * selected menu tab. Sub-nav is the Flow list.
+ *
+ * Routing:
+ *  - `/flow`            → main area shows the "Your Task Today?"
+ *                         empty-state composer. Reached by clicking
+ *                         the Flow tab or its `+` in the Menu.
+ *  - `/flow?id=N`       → main area shows that flow's "Create a
+ *                         Detailed Outline" detail view. Reached by
+ *                         clicking a row in the Flow list.
+ */
+
+import { useState, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import {
+  ArrowLeft, Search, Folder, Plus, Bookmark, MoreHorizontal,
+  CheckCircle2, Sparkles, Zap, Pencil, ArrowUp,
+} from "lucide-react";
+import OrgRail from "../chat/_components/OrgRail";
+import Menu, { ResizeHandle } from "../chat/_components/Menu";
+
+/** Sub-nav resize bounds. Below MIN_VISIBLE we render the column as
+ *  hidden (width 0) — the user has dragged it shut. */
+const SUBNAV_MIN_VISIBLE = 240;
+const SUBNAV_MAX = 600;
+const SUBNAV_DEFAULT = 376;
+
+type FlowItem = {
+  name: string;
+  status: string;
+  indicator?: "dot" | "loading" | "circle" | "clock" | null;
+};
+
+const FLOW_ITEMS: FlowItem[] = [
+  { name: "核心流程体验优化", status: "需求已整理完成，等待负责人确认范围", indicator: "dot" },
+  { name: "智能 Agent 场景设计", status: "初稿完成，等待你的反馈", indicator: "loading" },
+  { name: "AI 功能需求梳理", status: "方案已提交，进入设计评审", indicator: "circle" },
+  { name: "Prompt 策略优化准化", status: "已上线测试，收集中", indicator: "clock" },
+  { name: "MVP 功能验证", status: "需求已整理完成，等待负责人确认范围" },
+  { name: "设计团队交付质量与评审体系", status: "新版已更新，等待效果验证" },
+  { name: "任务协作流程标准化", status: "需求已整理完成，等待负责人确认范围" },
+  { name: "设计团队交付质量与评审体系", status: "新版已更新，等待效果验证" },
+  { name: "任务协作流程标准化", status: "需求已整理完成，等待负责人确认范围" },
+];
+
+const RECIPIENTS = ["李欣言", "刘嘉欣", "何裕", "张云熙", "张浩然", "李雨晴"];
+
+const FONT =
+  '"SF Pro", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
+
+export default function FlowPage() {
+  const [subNavWidth, setSubNavWidthRaw] = useState(SUBNAV_DEFAULT);
+  const [draggingSubNav, setDraggingSubNav] = useState(false);
+  // Clamp: snap to 0 when dragged below MIN_VISIBLE, else clamp to MAX.
+  function setSubNavWidth(w: number) {
+    if (Number.isNaN(w)) return;
+    if (w < SUBNAV_MIN_VISIBLE / 2) {
+      setSubNavWidthRaw(0);
+      return;
+    }
+    setSubNavWidthRaw(Math.max(SUBNAV_MIN_VISIBLE, Math.min(SUBNAV_MAX, w)));
+  }
+  return (
+    <div
+      className="h-screen w-screen flex bg-[#eef1f7] overflow-hidden"
+      style={{ fontFamily: FONT }}
+    >
+      <OrgRail />
+      <Menu />
+      <Suspense fallback={null}>
+        <FlowBody
+          subNavWidth={subNavWidth}
+          onSubNavResize={setSubNavWidth}
+          onSubNavDragStart={() => setDraggingSubNav(true)}
+          onSubNavDragEnd={() => setDraggingSubNav(false)}
+          draggingSubNav={draggingSubNav}
+        />
+      </Suspense>
+    </div>
+  );
+}
+
+function FlowBody({
+  subNavWidth,
+  onSubNavResize,
+  onSubNavDragStart,
+  onSubNavDragEnd,
+  draggingSubNav,
+}: {
+  subNavWidth: number;
+  onSubNavResize: (w: number) => void;
+  onSubNavDragStart: () => void;
+  onSubNavDragEnd: () => void;
+  draggingSubNav: boolean;
+}) {
+  const params = useSearchParams();
+  const idStr = params.get("id");
+  const id = idStr ? Number.parseInt(idStr, 10) : null;
+  const selected = id !== null && Number.isFinite(id) && id >= 0 && id < FLOW_ITEMS.length
+    ? id
+    : null;
+
+  return (
+    <>
+      <FlowList
+        selected={selected}
+        width={subNavWidth}
+        onResize={onSubNavResize}
+        onDragStart={onSubNavDragStart}
+        onDragEnd={onSubNavDragEnd}
+        dragging={draggingSubNav}
+      />
+      {selected === null ? (
+        <FlowEmptyState />
+      ) : (
+        <FlowDetail item={FLOW_ITEMS[selected]} />
+      )}
+    </>
+  );
+}
+
+/* ====================================================================== */
+/*  FLOW LIST COLUMN                                                       */
+/* ====================================================================== */
+function FlowList({
+  selected,
+  width,
+  onResize,
+  onDragStart,
+  onDragEnd,
+  dragging,
+}: {
+  selected: number | null;
+  width: number;
+  onResize: (w: number) => void;
+  onDragStart: () => void;
+  onDragEnd: () => void;
+  dragging: boolean;
+}) {
+  const router = useRouter();
+  if (width === 0) return null;
+  return (
+    <div
+      className={`shrink-0 h-full bg-[#f7f8fc] flex flex-col border-r border-[#e7ebf8] relative overflow-hidden ${
+        dragging ? "" : "transition-[width] duration-200 ease-out"
+      }`}
+      style={{ width }}
+    >
+      {/* Title bar — matches /chat: h-72, 18px font-semibold title,
+          24px icons, border-b. */}
+      <div className="h-[72px] shrink-0 flex items-center justify-between px-[15px] border-b border-[#e7ebf8]">
+        <h2 className="text-[18px] font-semibold text-[#020617] leading-[22.4px] tracking-tight">
+          Flow
+        </h2>
+        <div className="flex items-center gap-[9px]">
+          <button type="button" className="w-6 h-6 flex items-center justify-center text-[#455871] hover:text-[#020617]" aria-label="All assets">
+            <Folder size={22} strokeWidth={1.6} />
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/flow")}
+            className="w-6 h-6 flex items-center justify-center text-[#455871] hover:text-[#020617]"
+            aria-label="New flow"
+          >
+            <Plus size={22} strokeWidth={1.6} />
+          </button>
+        </div>
+      </div>
+
+      {/* Search — pill. The Q icon's left edge lines up with the Flow
+          tab's icon left edge in the Menu column (~20px from column
+          left): 8px container pad + 12px inner pad ≈ 20px. */}
+      <div className="px-2 pt-3 pb-2 shrink-0">
+        <div className="h-10 rounded-full bg-[#eef1f7] flex items-center gap-2.5 px-3">
+          <Search size={16} className="text-[#8793ab]" strokeWidth={1.8} />
+          <input
+            type="text"
+            placeholder="Search"
+            className="flex-1 bg-transparent outline-none text-[14px] text-[#020617] placeholder:text-[#8793ab]"
+          />
+        </div>
+      </div>
+
+      {/* All Flows header */}
+      <div className="px-4 py-2 flex items-center justify-between shrink-0">
+        <span className="text-[13px] text-[#8793ab]">All Flows</span>
+        <button type="button" className="w-8 h-7 rounded-md bg-white/60 border border-[#e7ebf8] flex items-center justify-center text-[#8793ab] hover:text-[#455871]" aria-label="Sort">
+          <svg viewBox="0 0 18 18" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+            <path d="M3 5h12M5 9h8M7 13h4"/>
+          </svg>
+        </button>
+      </div>
+
+      {/* Items */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin px-3 pb-3 flex flex-col gap-1">
+        {FLOW_ITEMS.map((item, i) => (
+          <FlowListItem
+            key={i}
+            item={item}
+            active={selected === i}
+            onClick={() => router.push(`/flow?id=${i}`)}
+          />
+        ))}
+      </div>
+
+      <ResizeHandle
+        currentWidth={width}
+        onResize={onResize}
+        onStart={onDragStart}
+        onEnd={onDragEnd}
+      />
+    </div>
+  );
+}
+
+function FlowListItem({
+  item,
+  active,
+  onClick,
+}: {
+  item: FlowItem;
+  active: boolean;
+  onClick: () => void;
+}) {
+  const indicator = (() => {
+    switch (item.indicator) {
+      case "dot":
+        return <span className="w-2.5 h-2.5 rounded-full bg-[#6366f1] shrink-0 mt-1.5" />;
+      case "loading":
+        return (
+          <svg className="w-3.5 h-3.5 shrink-0 mt-1 animate-spin" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="#fde68a" strokeWidth="2.5" />
+            <path d="M12 3a9 9 0 0 1 9 9" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+          </svg>
+        );
+      case "circle":
+        return <span className="w-3 h-3 rounded-full border-[2px] border-[#cbd5e1] shrink-0 mt-1.5" />;
+      case "clock":
+        return (
+          <svg className="w-3.5 h-3.5 shrink-0 mt-1" viewBox="0 0 24 24" fill="none" stroke="#8793ab" strokeWidth="2" strokeLinecap="round">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8v4l3 2" />
+          </svg>
+        );
+      default:
+        return null;
+    }
+  })();
+  // Selected = solid white card with a subtle blue left bar; hover =
+  // light grey background. No more "shrink the avatar" / soft white
+  // halo styles that the user called out as wrong.
+  const stateClass = active
+    ? "bg-white shadow-[0_1px_3px_rgba(15,41,77,0.06)]"
+    : "bg-transparent hover:bg-[#eef1f7]";
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`relative w-full text-left rounded-[12px] px-4 py-3 transition-colors ${stateClass}`}
+    >
+      {active && (
+        <span
+          aria-hidden
+          className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r-full bg-[#005eff]"
+        />
+      )}
+      <div className="flex items-start gap-2">
+        <div className="flex-1 min-w-0">
+          <p
+            className={`text-[15px] truncate leading-[1.3] ${
+              active ? "font-semibold text-[#020617]" : "font-medium text-[#0f294d]"
+            }`}
+          >
+            {item.name}
+          </p>
+          <p className="mt-1.5 text-[12px] text-[#8793ab] leading-[1.4] line-clamp-2">
+            {item.status}
+          </p>
+        </div>
+        {indicator}
+      </div>
+    </button>
+  );
+}
+
+/* ====================================================================== */
+/*  EMPTY STATE — `/flow` with no `?id`                                    */
+/* ====================================================================== */
+function FlowEmptyState() {
+  const [draft, setDraft] = useState("");
+  return (
+    <div className="flex-1 min-w-0 h-full flex items-center justify-center bg-[#f7f8fc]">
+      <div className="w-full max-w-[860px] px-8 -mt-16">
+        <h1 className="text-[36px] font-normal text-[#020617] text-center tracking-tight">
+          Your Task Today?
+        </h1>
+        <div className="mt-12 rounded-[20px] bg-white border border-[#e7ebf8] shadow-[0_2px_12px_rgba(15,41,77,0.04)]">
+          <div className="px-6 pt-5 pb-2">
+            <input
+              type="text"
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              placeholder="Describe the task..."
+              className="w-full bg-transparent outline-none text-[16px] text-[#020617] placeholder:text-[#8793ab]"
+            />
+          </div>
+          <div className="px-4 pb-3 pt-2 flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <button type="button" className="w-9 h-9 flex items-center justify-center text-[#455871] hover:text-[#020617] hover:bg-[#f7f8fc] rounded-md" aria-label="Add">
+                <Plus size={18} strokeWidth={1.8} />
+              </button>
+              <button type="button" className="w-9 h-9 flex items-center justify-center text-[#455871] hover:text-[#020617] hover:bg-[#f7f8fc] rounded-md" aria-label="AI">
+                <Sparkles size={16} strokeWidth={1.8} />
+              </button>
+            </div>
+            <button
+              type="button"
+              disabled={!draft.trim()}
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
+                draft.trim()
+                  ? "bg-[#020617] text-white hover:bg-[#0f294d]"
+                  : "bg-[#e7ebf8] text-[#8793ab] cursor-not-allowed"
+              }`}
+              aria-label="Send"
+            >
+              <ArrowUp size={16} strokeWidth={2.2} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ====================================================================== */
+/*  FLOW DETAIL — "Create a Detailed Outline" page                         */
+/*  Shown when `/flow?id=N` resolves to an existing flow.                  */
+/* ====================================================================== */
+function FlowDetail({ item }: { item: FlowItem }) {
+  const router = useRouter();
+  const [draft, setDraft] = useState("");
+  return (
+    <div className="flex-1 min-w-0 h-full flex flex-col bg-[#f7f8fc]">
+      {/* Header */}
+      <header className="h-[72px] shrink-0 flex items-center px-6 border-b border-[#e7ebf8] bg-[#f7f8fc]">
+        <button
+          type="button"
+          onClick={() => router.push("/flow")}
+          className="w-8 h-8 flex items-center justify-center text-[#455871] hover:text-[#020617] -ml-2 rounded-md hover:bg-white/60"
+          aria-label="Back"
+        >
+          <ArrowLeft size={18} strokeWidth={1.8} />
+        </button>
+        <h1 className="ml-2 text-[16px] font-semibold text-[#020617]">
+          Create a Detailed Outline
+        </h1>
+        <div className="ml-auto flex items-center gap-3">
+          <button type="button" className="flex items-center gap-1.5 px-3 h-8 text-[13px] text-[#455871] hover:text-[#020617]">
+            <CheckCircle2 size={14} strokeWidth={1.8} />
+            <span>Compete</span>
+          </button>
+          <button type="button" className="flex items-center gap-1.5 px-3 h-8 text-[13px] text-[#455871] hover:text-[#020617]">
+            <Zap size={14} strokeWidth={1.8} fill="currentColor" />
+            <span>Progress</span>
+          </button>
+          <button type="button" className="w-8 h-8 flex items-center justify-center text-[#455871] hover:text-[#020617]" aria-label="Bookmark">
+            <Bookmark size={16} strokeWidth={1.8} />
+          </button>
+          <button type="button" className="w-8 h-8 flex items-center justify-center text-[#455871] hover:text-[#020617]" aria-label="More">
+            <MoreHorizontal size={18} strokeWidth={1.8} />
+          </button>
+        </div>
+      </header>
+
+      {/* Body */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin">
+        <div className="max-w-[760px] mx-auto px-8 py-8 space-y-6 text-[14px] leading-[1.7] text-[#1f2937]">
+          {/* Title */}
+          <p className="text-[13px] text-[#8793ab]">{item.name}</p>
+          <p>your core value proposition.</p>
+          <p>Let&apos;s start with one question:</p>
+          <p>👉 What is the single most important problem your product must solve?</p>
+          <p>
+            To define the MVP clearly, we need to focus on the smallest set of features that can validate
+            your core value proposition.
+          </p>
+          <p>Let&apos;s start with one question:</p>
+          <p>👉 What is the single most important problem your product must solve?</p>
+
+          {/* AI CHECK-IN callout */}
+          <div className="rounded-[12px] bg-[#fff7e6] border border-[#ffe5b3] px-4 py-3 max-w-[480px]">
+            <div className="flex items-center gap-2 mb-2 text-[#a16207] text-[11px] font-semibold tracking-wide uppercase">
+              <Sparkles size={12} fill="currentColor" />
+              <span>AI CHECK-IN</span>
+            </div>
+            <p className="text-[14px] text-[#7c5e10] leading-[1.6]">
+              今天是 <span className="font-semibold">Lily Hill</span> 的最后工作日，但权限仍未关闭。需要我通知 Jack Wilson 去回收权限吗？
+            </p>
+          </div>
+
+          {/* User message bubble */}
+          <div className="flex justify-end">
+            <div className="bg-[#cce4ff] rounded-[12px] rounded-tr-[2px] px-4 py-3 max-w-[520px] text-[14px] text-[#0f294d] leading-[1.6]">
+              可以，帮我发送消息，让大家一起对齐一下，重点是自动化程度和风险控制。
+            </div>
+          </div>
+
+          {/* AI response */}
+          <p>好的，我来帮你创建。</p>
+          <div className="flex items-center gap-2 text-[#8793ab] text-[13px]">
+            <CheckCircle2 size={14} strokeWidth={2} className="text-[#10b981]" />
+            <span>Analysis completed</span>
+            <span className="text-[#8793ab]">›</span>
+          </div>
+
+          {/* Proposed Action card */}
+          <div className="rounded-[14px] bg-[rgba(204,228,255,0.15)] border border-[rgba(0,109,255,0.15)] p-4 max-w-[600px]">
+            <div className="flex items-start gap-3">
+              <div className="w-9 h-9 rounded-[8px] bg-[#006dff] flex items-center justify-center shrink-0 mt-0.5">
+                <Zap size={18} fill="white" className="text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] uppercase tracking-wide text-[#8793ab] font-medium">
+                  PROPOSED ACTION
+                </p>
+                <div className="flex items-center justify-between gap-2 mt-0.5">
+                  <h3 className="text-[16px] font-semibold text-[#020617]">Create Chat</h3>
+                  <button type="button" className="w-7 h-7 flex items-center justify-center text-[#8793ab] hover:text-[#020617]" aria-label="Edit">
+                    <Pencil size={13} strokeWidth={1.8} />
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="mt-3 ml-12">
+              <p className="text-[11px] uppercase tracking-wide text-[#8793ab] font-medium mb-1">
+                You
+              </p>
+              <p className="text-[14px] text-[#0f294d] leading-[1.6]">
+                我把 AI 自动总结接入 Flow 的方案整理了一版，发出来同步一下，大家可以看下是否有需要补充的地方。
+              </p>
+              <div className="mt-2 flex items-center gap-1.5 text-[12px] text-[#006dff]">
+                <span>🔗</span>
+                <span>2 assets form this Work</span>
+              </div>
+
+              {/* Recipients */}
+              <div className="mt-3 flex items-center gap-2 flex-wrap">
+                <span className="text-[12px] text-[#8793ab]">Send to</span>
+                {RECIPIENTS.map((name, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-1 pl-0.5 pr-2 py-0.5 rounded-full bg-white border border-[#e7ebf8]"
+                  >
+                    <span
+                      className="w-5 h-5 rounded-full text-white text-[9px] font-semibold flex items-center justify-center"
+                      style={{
+                        background: ["#fcd34d", "#a78bfa", "#10b981", "#0ea5e9", "#fb7185", "#f59e0b"][i % 6],
+                      }}
+                    >
+                      {name.slice(0, 1)}
+                    </span>
+                    <span className="text-[12px] text-[#020617]">{name}</span>
+                  </div>
+                ))}
+                <span className="text-[12px] text-[#8793ab] pl-1">+30</span>
+              </div>
+
+              {/* Action buttons */}
+              <div className="mt-4 flex flex-col gap-2">
+                <button
+                  type="button"
+                  className="w-full h-9 rounded-[8px] bg-white border border-[#e7ebf8] text-[14px] font-medium text-[#020617] hover:bg-[#f7f8fc]"
+                >
+                  Confirm
+                </button>
+                <button
+                  type="button"
+                  className="text-center text-[13px] text-[#8793ab] hover:text-[#020617]"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Composer */}
+      <div className="shrink-0 px-8 pb-6 pt-2">
+        <div className="max-w-[760px] mx-auto">
+          <div className="rounded-[14px] bg-white border border-[#e7ebf8] shadow-[0_2px_8px_rgba(15,41,77,0.04)]">
+            <div className="px-4 pt-3 pb-2">
+              <input
+                type="text"
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                placeholder="Describe the task..."
+                className="w-full bg-transparent outline-none text-[14px] text-[#020617] placeholder:text-[#8793ab]"
+              />
+            </div>
+            <div className="px-3 pb-2 flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <button type="button" className="w-7 h-7 flex items-center justify-center text-[#8793ab] hover:text-[#020617]" aria-label="Add">
+                  <Plus size={16} strokeWidth={1.8} />
+                </button>
+                <button type="button" className="w-7 h-7 flex items-center justify-center text-[#8793ab] hover:text-[#020617]" aria-label="AI">
+                  <Sparkles size={14} strokeWidth={1.8} />
+                </button>
+              </div>
+              <button
+                type="button"
+                disabled={!draft.trim()}
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                  draft.trim()
+                    ? "bg-[#006dff] text-white hover:bg-[#0055cc]"
+                    : "bg-[#f5f5f5] text-[#8d8d8d] cursor-not-allowed"
+                }`}
+                aria-label="Send"
+              >
+                <ArrowUp size={16} strokeWidth={2} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
