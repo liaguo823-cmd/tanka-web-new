@@ -519,11 +519,11 @@ function WorkspaceMenuButton() {
         onBlur={scheduleHide}
         aria-label="Workspace menu"
         aria-expanded={open}
-        className="w-[20px] h-[20px] flex items-center justify-center rounded-md text-[#455871] hover:text-[#020617] transition-colors"
+        className="w-[24px] h-[24px] flex items-center justify-center rounded-md text-[#455871] hover:text-[#020617] hover:bg-[#c9d3e6] transition-colors"
       >
         <ChevronDown
-          size={16}
-          strokeWidth={2}
+          size={18}
+          strokeWidth={2.2}
           className="transition-transform duration-200 ease-out"
           style={{ transform: open ? "rotate(180deg)" : undefined }}
         />
