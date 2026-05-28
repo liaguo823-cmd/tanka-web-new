@@ -32,7 +32,6 @@ import {
   LogOut,
   ArrowRight,
   FileText,
-  Puzzle,
   X,
 } from "lucide-react";
 import {
@@ -97,19 +96,19 @@ const TOP_NAV: NavItem[] = [
   { href: "/link", label: "Link", iconActive: asset("/figma/menu-link-active.svg"), iconInactive: asset("/figma/menu-link-inactive.svg") },
 ];
 
-/** A doc/file pinned in the menu's bottom half — Feishu-style. */
+/** A doc pinned in the menu's bottom half. Only one document
+ *  type for now — every pinned item renders as the blue file
+ *  glyph and the tooltip uses the `<name>-memo` shorthand. */
 type PinnedItem = {
   /** Visible truncated title in the row. */
   shortName: string;
   /** Full title shown in the tooltip on hover. */
   fullName: string;
-  /** Which icon glyph + tint to render. */
-  kind: "doc" | "puzzle";
 };
 
 const PINNED: PinnedItem[] = [
-  { shortName: "设计资料总结 Copy", fullName: "设计资料总结 Copy - 飞书云文档", kind: "doc" },
-  { shortName: "Tanka 设计-2026", fullName: "Tanka 设计-2026 - 飞书云文档", kind: "puzzle" },
+  { shortName: "设计资料总结 Copy", fullName: "设计资料总结 Copy-memo" },
+  { shortName: "Tanka 设计-2026", fullName: "Tanka 设计-2026-memo" },
 ];
 
 const APPS_NAV: NavItem[] = [
@@ -475,10 +474,6 @@ function PinnedTab({ item }: { item: PinnedItem }) {
     setPos(null);
   }
 
-  // Icon + tint per kind, mimicking the Feishu doc-type chips.
-  const Icon = item.kind === "doc" ? FileText : Puzzle;
-  const iconColor = item.kind === "doc" ? "#3b82f6" : "#10b981";
-
   return (
     <>
       <button
@@ -492,7 +487,7 @@ function PinnedTab({ item }: { item: PinnedItem }) {
         className="group/pin flex items-center gap-[10px] px-[6px] h-[32px] w-full rounded-[8px] hover:bg-[#d8dfed]/50 transition-colors"
       >
         <span className="size-[20px] shrink-0 flex items-center justify-center">
-          <Icon size={16} strokeWidth={1.8} style={{ color: iconColor }} />
+          <FileText size={16} strokeWidth={1.8} className="text-[#3b82f6]" />
         </span>
         <span
           className={`${FONT_SF_PRO} font-[400] text-[13px] text-[#455871] truncate flex-1 text-left`}
