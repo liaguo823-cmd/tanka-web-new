@@ -40,12 +40,21 @@ export const WORKSPACES: Workspace[] = [
   { id: "x", name: "X Corp", unread: 0 },
 ];
 
-/** Layout constants for the Menu's resizable width. */
+/** Layout constants for the Menu's resizable width.
+ *
+ *  The drag is snap-based, not free-form, because intermediate widths
+ *  produce ugly layouts (clipped labels, oversized gutters):
+ *
+ *  - Below COLLAPSE_THRESHOLD the width snaps to COLLAPSED (60).
+ *  - Above the threshold the width is clamped to ≥ EXPANDED (180) —
+ *    that's the narrowest column the expanded layout fits in without
+ *    clipping the Tanka header / divider / labels.
+ *  - Beyond 180 the width follows the cursor up to MAX (240). */
 export const MENU_WIDTH_COLLAPSED = 60;
 export const MENU_WIDTH_EXPANDED = 180;
 export const MENU_WIDTH_MIN = 60;
-export const MENU_WIDTH_MAX = 280;
-/** Below this width the menu reflows to its icon-only layout. */
+export const MENU_WIDTH_MAX = 240;
+/** Below this width the menu snaps to the COLLAPSED layout. */
 export const MENU_COLLAPSE_THRESHOLD = 120;
 
 type Ctx = {

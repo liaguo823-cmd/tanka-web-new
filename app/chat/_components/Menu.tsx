@@ -110,9 +110,17 @@ export default function Menu() {
   const [menuWidth, setMenuWidthRaw] = useState(MENU_WIDTH_EXPANDED);
   const [dragging, setDragging] = useState(false);
   const menuCollapsed = menuWidth < MENU_COLLAPSE_THRESHOLD;
+  // Snap-based drag: no awkward intermediate widths. Below the
+  // threshold we land at the collapsed icon-only column; above the
+  // threshold the width is clamped to ≥ MENU_WIDTH_EXPANDED so the
+  // expanded layout never gets clipped.
   const setMenuWidth = useCallback((w: number) => {
     if (Number.isNaN(w)) return;
-    setMenuWidthRaw(Math.max(MENU_WIDTH_MIN, Math.min(MENU_WIDTH_MAX, w)));
+    if (w < MENU_COLLAPSE_THRESHOLD) {
+      setMenuWidthRaw(MENU_WIDTH_COLLAPSED);
+    } else {
+      setMenuWidthRaw(Math.max(MENU_WIDTH_EXPANDED, Math.min(MENU_WIDTH_MAX, w)));
+    }
   }, []);
   const toggleMenu = useCallback(() => {
     setMenuWidthRaw((w) =>
