@@ -310,8 +310,10 @@ export default function Menu() {
 
         {/* Divider */}
         <div
-          className={`bg-[#d0dae8] h-px shrink-0 mx-auto ${
-            menuCollapsed ? "w-[28px] my-[6px]" : "w-[151px]"
+          className={`bg-[#d0dae8] h-px shrink-0 ${
+            menuCollapsed
+              ? "w-[28px] mx-auto my-[6px]"
+              : "self-stretch mx-[14px]"
           }`}
         />
 
