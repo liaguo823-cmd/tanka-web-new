@@ -31,6 +31,9 @@ import {
   Settings,
   LogOut,
   ArrowRight,
+  FileText,
+  Puzzle,
+  X,
 } from "lucide-react";
 import {
   useCallback,
@@ -92,6 +95,21 @@ const TOP_NAV: NavItem[] = [
   { href: "/flow", label: "Flow", iconActive: asset("/figma/menu-flow-active.svg"), iconInactive: asset("/figma/menu-flow-inactive.svg"), plusGoesToHref: true },
   { href: "/chat", label: "Chat", iconActive: asset("/figma/menu-chat-active.svg"), iconInactive: asset("/figma/menu-chat-inactive.svg"), plusItems: ["New Chat", "New Folder", "New Broadcast"] },
   { href: "/link", label: "Link", iconActive: asset("/figma/menu-link-active.svg"), iconInactive: asset("/figma/menu-link-inactive.svg") },
+];
+
+/** A doc/file pinned in the menu's bottom half — Feishu-style. */
+type PinnedItem = {
+  /** Visible truncated title in the row. */
+  shortName: string;
+  /** Full title shown in the tooltip on hover. */
+  fullName: string;
+  /** Which icon glyph + tint to render. */
+  kind: "doc" | "puzzle";
+};
+
+const PINNED: PinnedItem[] = [
+  { shortName: "设计资料总结 Copy", fullName: "设计资料总结 Copy - 飞书云文档", kind: "doc" },
+  { shortName: "Tanka 设计-2026", fullName: "Tanka 设计-2026 - 飞书云文档", kind: "puzzle" },
 ];
 
 const APPS_NAV: NavItem[] = [
@@ -352,6 +370,25 @@ export default function Menu() {
             ))}
           </div>
         </div>
+
+        {/* Pinned — bottom half of the menu in expanded mode. Each
+            item is a small doc shortcut with a tooltip showing the
+            full title. Hidden in collapsed mode (no room for labels). */}
+        {!menuCollapsed && (
+          <div className="flex flex-col gap-[12px] py-[12px] shrink-0 w-full">
+            <div
+              className={`${FONT_SF_PRO} font-[400] h-[17px] leading-[0] shrink-0 text-[#6f7f94] text-[12px] tracking-[0.48px] self-stretch pl-[14px]`}
+              style={{ fontVariationSettings: "'wdth' 100" }}
+            >
+              <p className="leading-[21.6px]">Pinned</p>
+            </div>
+            <div className="flex flex-col gap-[2px] self-stretch px-[8px]">
+              {PINNED.map((item) => (
+                <PinnedTab key={item.fullName} item={item} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Bottom row — user photo (always visible) + fold/expand icon.
@@ -419,6 +456,68 @@ export default function Menu() {
         onClose={() => setUserMenuOpen(false)}
       />
     </div>
+  );
+}
+
+/** A pinned doc row in the bottom-half of the menu. Renders a Feishu-
+ *  style file glyph, a truncated label, and a hover-revealed close
+ *  button. Long titles get a portal-rendered tooltip on hover/focus. */
+function PinnedTab({ item }: { item: PinnedItem }) {
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+
+  function show() {
+    if (!triggerRef.current) return;
+    const r = triggerRef.current.getBoundingClientRect();
+    setPos({ top: r.top + r.height / 2, left: r.right + 8 });
+  }
+  function hide() {
+    setPos(null);
+  }
+
+  // Icon + tint per kind, mimicking the Feishu doc-type chips.
+  const Icon = item.kind === "doc" ? FileText : Puzzle;
+  const iconColor = item.kind === "doc" ? "#3b82f6" : "#10b981";
+
+  return (
+    <>
+      <button
+        ref={triggerRef}
+        type="button"
+        aria-label={item.fullName}
+        onMouseEnter={show}
+        onMouseLeave={hide}
+        onFocus={show}
+        onBlur={hide}
+        className="group/pin flex items-center gap-[10px] px-[6px] h-[32px] w-full rounded-[8px] hover:bg-[#d8dfed]/50 transition-colors"
+      >
+        <span className="size-[20px] shrink-0 flex items-center justify-center">
+          <Icon size={16} strokeWidth={1.8} style={{ color: iconColor }} />
+        </span>
+        <span
+          className={`${FONT_SF_PRO} font-[400] text-[13px] text-[#455871] truncate flex-1 text-left`}
+        >
+          {item.shortName}
+        </span>
+        <span
+          aria-hidden
+          className="opacity-0 group-hover/pin:opacity-100 transition-opacity w-[18px] h-[18px] flex items-center justify-center rounded text-[#8793ab] hover:bg-[#c9d3e6] hover:text-[#455871]"
+        >
+          <X size={12} strokeWidth={2} />
+        </span>
+      </button>
+      {pos && typeof window !== "undefined" &&
+        createPortal(
+          <div
+            role="tooltip"
+            className="fixed z-[100] -translate-y-1/2 whitespace-nowrap rounded-md bg-[#020617] text-white text-[12px] font-medium px-2 py-1 pointer-events-none shadow-[0_2px_8px_rgba(15,41,77,0.15)]"
+            style={{ top: pos.top, left: pos.left }}
+          >
+            {item.fullName}
+          </div>,
+          document.body,
+        )}
+    </>
   );
 }
 

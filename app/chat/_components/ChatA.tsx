@@ -107,8 +107,8 @@ export default function ChatA() {
         {/* Chat list — scrollable so the rows can overflow without
             painting different bg colors at the bottom of the column. */}
         <div className="content-stretch flex flex-[1_0_0] flex-col items-end min-h-0 relative w-full overflow-y-auto scrollbar-thin" data-node-id="3:7789">
-          {/* Row 1: AI Assistant (SELECTED state, has image 12 overlay) */}
-          <div className="bg-[rgba(227,232,242,0.6)] content-stretch flex items-center justify-end overflow-clip relative shrink-0 w-full" data-node-id="3:7790" data-name="messages row">
+          {/* Row 1: AI Assistant — has image 12 overlay */}
+          <div className="content-stretch flex items-center justify-end overflow-clip relative shrink-0 w-full hover:bg-[#eff2fb] cursor-pointer transition-colors" data-node-id="3:7790" data-name="messages row">
             <div className="content-stretch flex flex-[1_0_0] flex-col items-start justify-center min-w-px relative" data-node-id="I3:7790;1040:34748" data-name="Content">
               <div className="content-stretch flex gap-[15px] h-[72px] items-center px-[15px] py-[12px] relative shrink-0 w-full" data-node-id="I3:7790;8:12823" data-name="Content">
                 <div className="opacity-0 relative shrink-0 size-[48px]" data-node-id="I3:7790;1054:46235" data-name="Avatar">
@@ -251,8 +251,8 @@ export default function ChatA() {
             </div>
           </div>
 
-          {/* Row 3: AI Innovation Hub (cyan avatar "TK", blue badge with mention) - node 3:7797 */}
-          <div className="content-stretch flex gap-[15px] h-[72px] items-center px-[15px] py-[12px] relative shrink-0 w-full" data-node-id="3:7797" data-name="Content">
+          {/* Row 3: AI Innovation Hub — DEFAULT SELECTED row */}
+          <div className="bg-[rgba(227,232,242,0.6)] content-stretch flex gap-[15px] h-[72px] items-center px-[15px] py-[12px] relative shrink-0 w-full cursor-pointer" data-node-id="3:7797" data-name="Content">
             <div className="content-stretch flex flex-col items-end justify-center relative shrink-0 size-[48px]" data-node-id="3:7798" data-name="头像">
               <div className="relative shrink-0 size-[48px]" data-node-id="3:7799" data-name="默认">
                 <div className="absolute bg-[#00b1d1] left-[14.4px] opacity-30 rounded-[385.701px] size-[38.4px] top-[0px]" data-node-id="3:7800" data-name="Avatar" />

@@ -229,7 +229,7 @@ function SettingsRow({
 /* ====================================================================== */
 function TeamSettingsMain() {
   return (
-    <div className="flex-1 min-w-0 h-full bg-white flex items-center justify-center relative overflow-hidden">
+    <div className="flex-1 min-w-0 h-full bg-[#f7f8fc] flex items-center justify-center relative overflow-hidden">
       <svg
         aria-hidden
         viewBox="0 0 240 200"
