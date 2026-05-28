@@ -18,6 +18,8 @@
 
 import Link from "next/link";
 import { ChevronsLeft } from "lucide-react";
+import { useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useMenuCollapse, WORKSPACES, type WorkspaceId } from "./MenuContext";
 import { asset } from "../../_lib/asset";
 
@@ -86,25 +88,13 @@ export default function OrgRail() {
           </div>
         </div>
 
-        {/* Bottom: gear only — links to /team-settings. Hovering
-            reveals a tooltip to the right of the icon since the
-            gear sits at the left edge of the viewport. */}
+        {/* Bottom: gear only — links to /team-settings with a
+            tooltip rendered via portal so it isn't clipped by the
+            rail's overflow-hidden (needed for the collapse animation). */}
         <div className="flex items-center justify-center w-full">
-          <div className="relative group/gear">
-            <Link
-              href="/team-settings"
-              aria-label="Team Settings"
-              className="size-[36px] flex items-center justify-center text-[#455871] hover:text-[#020617] rounded-md hover:bg-white/50 transition-colors"
-            >
-              <img alt="" className="block size-[20px]" src={imgNut} />
-            </Link>
-            <span
-              role="tooltip"
-              className="absolute left-full ml-2 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#020617] text-white text-[12px] font-medium px-2 py-1 opacity-0 pointer-events-none group-hover/gear:opacity-100 transition-opacity z-50"
-            >
-              Team Settings
-            </span>
-          </div>
+          <GearTooltipLink href="/team-settings" label="Team Settings">
+            <img alt="" className="block size-[20px]" src={imgNut} />
+          </GearTooltipLink>
         </div>
       </div>
     </div>
@@ -158,6 +148,60 @@ function WorkspaceTile({
         </div>
       )}
     </div>
+  );
+}
+
+/** Icon link with a portal-rendered tooltip anchored to the right
+ *  side of the icon. Used by the gear at the bottom of the rail —
+ *  the rail's overflow-hidden would clip an in-DOM tooltip, so we
+ *  position it fixed against the viewport instead. */
+function GearTooltipLink({
+  href,
+  label,
+  children,
+}: {
+  href: string;
+  label: string;
+  children: React.ReactNode;
+}) {
+  const triggerRef = useRef<HTMLAnchorElement>(null);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+
+  function show() {
+    if (!triggerRef.current) return;
+    const r = triggerRef.current.getBoundingClientRect();
+    setPos({ top: r.top + r.height / 2, left: r.right + 8 });
+  }
+  function hide() {
+    setPos(null);
+  }
+
+  return (
+    <>
+      <Link
+        ref={triggerRef}
+        href={href}
+        aria-label={label}
+        onMouseEnter={show}
+        onMouseLeave={hide}
+        onFocus={show}
+        onBlur={hide}
+        className="size-[36px] flex items-center justify-center text-[#455871] hover:text-[#020617] rounded-md hover:bg-white/50 transition-colors"
+      >
+        {children}
+      </Link>
+      {pos && typeof window !== "undefined" &&
+        createPortal(
+          <div
+            role="tooltip"
+            className="fixed z-[100] -translate-y-1/2 whitespace-nowrap rounded-md bg-[#020617] text-white text-[12px] font-medium px-2 py-1 pointer-events-none shadow-[0_2px_8px_rgba(15,41,77,0.15)]"
+            style={{ top: pos.top, left: pos.left }}
+          >
+            {label}
+          </div>,
+          document.body,
+        )}
+    </>
   );
 }
 
