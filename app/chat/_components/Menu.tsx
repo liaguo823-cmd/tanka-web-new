@@ -288,15 +288,21 @@ export default function Menu() {
             pb-[16px]) lines up our inner divider with the OrgRail's
             short-line divider — accounting for our tabs being 36px
             tall vs the rail's 38px tiles.
-            Expanded: items-start + pl-[8px] keeps the tab icons at
-            the same x as the Tanka header logo regardless of column
-            width. Collapsed (60px): center the 36×36 tiles. */}
+            Expanded: inner gets `px-[8px]` so each NavTab stretches
+            to (menuWidth - 16) and the hover/active background
+            scales with the column. Tab's internal px-[6px] still
+            lands the icon at x=14, aligned with the Tanka header
+            logo. Collapsed (60px): center the 36×36 tiles. */}
         <div
           className={`flex flex-col pb-[18px] shrink-0 w-full ${
-            menuCollapsed ? "items-center" : "items-start pl-[8px]"
+            menuCollapsed ? "items-center" : ""
           }`}
         >
-          <div className="flex flex-col gap-[6px]">
+          <div
+            className={`flex flex-col gap-[6px] ${
+              menuCollapsed ? "" : "self-stretch px-[8px]"
+            }`}
+          >
             {TOP_NAV.map((n) => (
               <NavTab
                 key={n.href}
@@ -317,21 +323,25 @@ export default function Menu() {
           }`}
         />
 
-        {/* Apps section — same left-align rule as the top nav. */}
+        {/* Apps section — same stretch rule as the top nav. */}
         <div
           className={`flex flex-col gap-[12px] py-[12px] shrink-0 w-full ${
-            menuCollapsed ? "items-center" : "items-start pl-[8px]"
+            menuCollapsed ? "items-center" : ""
           }`}
         >
           {!menuCollapsed && (
             <div
-              className={`${FONT_SF_PRO} font-[400] h-[17px] leading-[0] shrink-0 text-[#6f7f94] text-[12px] tracking-[0.48px] w-[138px] pl-[6px]`}
+              className={`${FONT_SF_PRO} font-[400] h-[17px] leading-[0] shrink-0 text-[#6f7f94] text-[12px] tracking-[0.48px] self-stretch pl-[14px]`}
               style={{ fontVariationSettings: "'wdth' 100" }}
             >
               <p className="leading-[21.6px]">Apps</p>
             </div>
           )}
-          <div className="flex flex-col gap-[6px]">
+          <div
+            className={`flex flex-col gap-[6px] ${
+              menuCollapsed ? "" : "self-stretch px-[8px]"
+            }`}
+          >
             {APPS_NAV.map((n) => (
               <NavTab
                 key={n.href}
@@ -743,13 +753,13 @@ function NavTab({
   }
 
   return (
-    <div ref={wrapRef} className="relative">
+    <div ref={wrapRef} className="relative w-full">
       <Link
         href={item.href}
-        className={`${bg} group/tab flex flex-col items-start justify-center px-[6px] relative rounded-[8px] shrink-0 w-[156px] h-[36px] cursor-pointer transition-colors`}
+        className={`${bg} group/tab flex flex-col items-start justify-center px-[6px] relative rounded-[8px] shrink-0 w-full h-[36px] cursor-pointer transition-colors`}
         data-name="tab"
       >
-        <div className="flex gap-[12px] items-center relative shrink-0 w-[139px]">
+        <div className="flex gap-[12px] items-center relative shrink-0 w-full">
           <span className="size-[24px] shrink-0 flex items-center justify-center">
             <NavIconRender item={item} active={active} />
           </span>
