@@ -197,7 +197,7 @@ export default function Menu() {
 
         {/* Divider */}
         <div
-          className={`bg-[#e7ebf8] h-px shrink-0 mx-auto ${
+          className={`bg-[#d0dae8] h-px shrink-0 mx-auto ${
             menuCollapsed ? "w-[28px] my-[6px]" : "w-[151px]"
           }`}
         />

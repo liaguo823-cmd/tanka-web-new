@@ -43,7 +43,7 @@ export default function OrgRail() {
       aria-hidden={collapsed}
     >
       <div
-        className={`bg-[#eef1f7] border-[#e7ebf8] border-r border-solid h-full w-[60px] flex flex-col items-stretch justify-between pb-[16px] transition-opacity duration-200 ease-out ${
+        className={`bg-[#eef1f7] border-[#d0dae8] border-r border-solid h-full w-[60px] flex flex-col items-stretch justify-between pb-[16px] transition-opacity duration-200 ease-out ${
           collapsed ? "opacity-0" : "opacity-100 delay-100"
         }`}
         data-node-id="8:10298"
@@ -75,7 +75,7 @@ export default function OrgRail() {
             ))}
 
             {/* Divider between workspaces and the Add button */}
-            <div className="my-[6px] h-px w-[28px] bg-[#e7ebf8]" />
+            <div className="my-[6px] h-px w-[28px] bg-[#d0dae8]" />
 
             {/* Add workspace — permanent white circle */}
             <button
