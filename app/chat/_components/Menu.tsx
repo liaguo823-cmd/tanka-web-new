@@ -62,6 +62,11 @@ type NavItem = {
   iconActive?: string;
   /** Inactive SVG src (outlined, lighter). */
   iconInactive?: string;
+  /** Override the rendered size (px) of the ACTIVE icon. Defaults to 24.
+   *  Used by Chat — its filled bubble fills its 24×24 viewBox much
+   *  more than the other active icons, so it needs a smaller box to
+   *  read at the same visual weight. */
+  iconActiveSize?: number;
   plusItems?: string[];
   plusModal?: PlusModalKind;
   /** When true, the + button is shown but simply navigates to `href`
@@ -71,7 +76,7 @@ type NavItem = {
 
 const TOP_NAV: NavItem[] = [
   { href: "/flow", label: "Flow", iconActive: asset("/figma/menu-flow-active.svg"), iconInactive: asset("/figma/menu-flow-inactive.svg"), plusGoesToHref: true },
-  { href: "/chat", label: "Chat", iconActive: asset("/figma/menu-chat-active.svg"), iconInactive: asset("/figma/menu-chat-inactive.svg"), plusItems: ["New Chat", "New Folder", "New Broadcast"] },
+  { href: "/chat", label: "Chat", iconActive: asset("/figma/menu-chat-active.svg"), iconInactive: asset("/figma/menu-chat-inactive.svg"), iconActiveSize: 16, plusItems: ["New Chat", "New Folder", "New Broadcast"] },
   { href: "/link", label: "Link", iconActive: asset("/figma/menu-link-active.svg"), iconInactive: asset("/figma/menu-link-inactive.svg") },
 ];
 
@@ -530,11 +535,13 @@ function WorkspaceLogo({ workspace }: { workspace: Workspace }) {
  *  Link) and the img-based active/inactive pair (Apps section). */
 function NavIconRender({ item, active }: { item: NavItem; active: boolean }) {
   if (item.iconActive && item.iconInactive) {
+    const size = active && item.iconActiveSize ? item.iconActiveSize : 24;
     return (
       <img
         alt=""
         src={active ? item.iconActive : item.iconInactive}
-        className="block w-6 h-6"
+        className="block"
+        style={{ width: size, height: size }}
       />
     );
   }
