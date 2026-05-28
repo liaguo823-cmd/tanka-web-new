@@ -42,11 +42,12 @@ import {
   FollowUpModal,
   type PlusModalKind,
 } from "../../_components/PlusModals";
+import { asset } from "../../_lib/asset";
 
-const imgPhoto = "/figma/user-photo.png";
-const imgTankaMark = "/figma/tanka-mark-menu.svg";
-const imgT = "/figma/t-letter.svg";
-const imgX = "/figma/org-x.svg";
+const imgPhoto = asset("/figma/user-photo.png");
+const imgTankaMark = asset("/figma/tanka-mark-menu.svg");
+const imgT = asset("/figma/t-letter.svg");
+const imgX = asset("/figma/org-x.svg");
 
 const FONT_SF_PRO =
   "font-['SF_Pro',-apple-system,'BlinkMacSystemFont','Helvetica_Neue',sans-serif]";
@@ -69,17 +70,17 @@ type NavItem = {
 };
 
 const TOP_NAV: NavItem[] = [
-  { href: "/flow", label: "Flow", iconActive: "/figma/menu-flow-active.svg", iconInactive: "/figma/menu-flow-inactive.svg", plusGoesToHref: true },
-  { href: "/chat", label: "Chat", iconActive: "/figma/menu-chat-active.svg", iconInactive: "/figma/menu-chat-inactive.svg", plusItems: ["New Chat", "New Folder", "New Broadcast"] },
-  { href: "/link", label: "Link", iconActive: "/figma/menu-link-active.svg", iconInactive: "/figma/menu-link-inactive.svg" },
+  { href: "/flow", label: "Flow", iconActive: asset("/figma/menu-flow-active.svg"), iconInactive: asset("/figma/menu-flow-inactive.svg"), plusGoesToHref: true },
+  { href: "/chat", label: "Chat", iconActive: asset("/figma/menu-chat-active.svg"), iconInactive: asset("/figma/menu-chat-inactive.svg"), plusItems: ["New Chat", "New Folder", "New Broadcast"] },
+  { href: "/link", label: "Link", iconActive: asset("/figma/menu-link-active.svg"), iconInactive: asset("/figma/menu-link-inactive.svg") },
 ];
 
 const APPS_NAV: NavItem[] = [
-  { href: "/sop", label: "SOP", iconActive: "/figma/menu-sop-active.svg", iconInactive: "/figma/menu-sop-inactive.svg" },
-  { href: "/memos", label: "Memos", iconActive: "/figma/menu-memos-active.svg", iconInactive: "/figma/menu-memos-inactive.svg", plusModal: "memo" },
-  { href: "/follow-ups", label: "Follow-ups", iconActive: "/figma/menu-followups-active.svg", iconInactive: "/figma/menu-followups-inactive.svg", plusModal: "follow-up" },
-  { href: "/votes", label: "Votes", iconActive: "/figma/menu-votes-active.svg", iconInactive: "/figma/menu-votes-inactive.svg", plusModal: "vote" },
-  { href: "/calendar", label: "Calendar", iconActive: "/figma/menu-calendar-active.svg", iconInactive: "/figma/menu-calendar-inactive.svg", plusModal: "calendar" },
+  { href: "/sop", label: "SOP", iconActive: asset("/figma/menu-sop-active.svg"), iconInactive: asset("/figma/menu-sop-inactive.svg") },
+  { href: "/memos", label: "Memos", iconActive: asset("/figma/menu-memos-active.svg"), iconInactive: asset("/figma/menu-memos-inactive.svg"), plusModal: "memo" },
+  { href: "/follow-ups", label: "Follow-ups", iconActive: asset("/figma/menu-followups-active.svg"), iconInactive: asset("/figma/menu-followups-inactive.svg"), plusModal: "follow-up" },
+  { href: "/votes", label: "Votes", iconActive: asset("/figma/menu-votes-active.svg"), iconInactive: asset("/figma/menu-votes-inactive.svg"), plusModal: "vote" },
+  { href: "/calendar", label: "Calendar", iconActive: asset("/figma/menu-calendar-active.svg"), iconInactive: asset("/figma/menu-calendar-inactive.svg"), plusModal: "calendar" },
 ];
 
 export default function Menu() {

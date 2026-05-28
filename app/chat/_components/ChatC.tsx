@@ -1,31 +1,33 @@
 "use client";
 
-const imgAvatarExample = "/figma/chatc-avatar-1.png";
-const imgAvatarExample1 = "/figma/chatc-avatar-2.png";
-const imgAvatarExample2 = "/figma/chatc-avatar-daniel.png";
-const imgImage = "/figma/chatc-bubble-image.jpg";
-const imgImgThumbnailUnder3X = "/figma/chatc-image-thumb-overlay.png";
-const imgImage1 = "/figma/chatc-memo-thumb.png";
-const imgImage11 = "/figma/deco-dot.png";
-const imgOfficialGroupTanka = "/figma/chatc-official-group-tanka.svg";
-const imgSubtract = "/figma/chatc-official-subtract.svg";
-const imgPathStroke = "/figma/chatc-title-search-icon.svg";
-const imgVector = "/figma/chatc-title-icon-2.svg";
-const imgVector1 = "/figma/chatc-title-icon-3.svg";
-const imgVector2 = "/figma/chatc-read-check.svg";
-const imgDivider = "/figma/chatc-name-divider.svg";
-const imgVector3 = "/figma/chatc-audio-play.svg";
-const imgTrackStroke = "/figma/chatc-audio-track.svg";
-const img = "/figma/chatc-memo-icon-rect.svg";
-const imgUnion = "/figma/chatc-memo-icon-union.svg";
-const imgDivider1 = "/figma/chatc-memo-divider.svg";
-const imgUnion1 = "/figma/chatc-input-tanka-union.svg";
-const imgVector4 = "/figma/chatc-input-icon-1.svg";
-const imgVector5 = "/figma/chatc-input-icon-2.svg";
-const imgVector6 = "/figma/chatc-input-icon-3.svg";
-const imgVector7 = "/figma/chatc-input-icon-4.svg";
-const imgVector8 = "/figma/chatc-input-icon-5.svg";
-const imgVector9 = "/figma/chatc-send-icon.svg";
+import { asset } from "../../_lib/asset";
+
+const imgAvatarExample = asset("/figma/chatc-avatar-1.png");
+const imgAvatarExample1 = asset("/figma/chatc-avatar-2.png");
+const imgAvatarExample2 = asset("/figma/chatc-avatar-daniel.png");
+const imgImage = asset("/figma/chatc-bubble-image.jpg");
+const imgImgThumbnailUnder3X = asset("/figma/chatc-image-thumb-overlay.png");
+const imgImage1 = asset("/figma/chatc-memo-thumb.png");
+const imgImage11 = asset("/figma/deco-dot.png");
+const imgOfficialGroupTanka = asset("/figma/chatc-official-group-tanka.svg");
+const imgSubtract = asset("/figma/chatc-official-subtract.svg");
+const imgPathStroke = asset("/figma/chatc-title-search-icon.svg");
+const imgVector = asset("/figma/chatc-title-icon-2.svg");
+const imgVector1 = asset("/figma/chatc-title-icon-3.svg");
+const imgVector2 = asset("/figma/chatc-read-check.svg");
+const imgDivider = asset("/figma/chatc-name-divider.svg");
+const imgVector3 = asset("/figma/chatc-audio-play.svg");
+const imgTrackStroke = asset("/figma/chatc-audio-track.svg");
+const img = asset("/figma/chatc-memo-icon-rect.svg");
+const imgUnion = asset("/figma/chatc-memo-icon-union.svg");
+const imgDivider1 = asset("/figma/chatc-memo-divider.svg");
+const imgUnion1 = asset("/figma/chatc-input-tanka-union.svg");
+const imgVector4 = asset("/figma/chatc-input-icon-1.svg");
+const imgVector5 = asset("/figma/chatc-input-icon-2.svg");
+const imgVector6 = asset("/figma/chatc-input-icon-3.svg");
+const imgVector7 = asset("/figma/chatc-input-icon-4.svg");
+const imgVector8 = asset("/figma/chatc-input-icon-5.svg");
+const imgVector9 = asset("/figma/chatc-send-icon.svg");
 
 export default function ChatC() {
   return (

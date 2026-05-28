@@ -25,6 +25,11 @@ const nextConfig: NextConfig = {
   },
   // Pages prefers trailing-slash URLs to avoid 404s.
   trailingSlash: true,
+  // Exposed to the browser so the asset() helper can prepend basePath
+  // to raw <img src> URLs (next/image already does this on its own).
+  env: {
+    NEXT_PUBLIC_BASE_PATH: isProd ? prodBase : "",
+  },
 };
 
 export default nextConfig;

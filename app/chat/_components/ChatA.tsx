@@ -1,22 +1,24 @@
 "use client";
 
-const imgImage12 = "/figma/chata-image12.png";
-const imgAvatarExample = "/figma/chata-avatar-1.png";
-const imgAvatarExample1 = "/figma/chata-avatar-2.png";
-const imgAvatarExample2 = "/figma/chata-avatar-3.png";
-const imgAvatarExample3 = "/figma/chata-avatar-4.png";
-const imgAvatarExample4 = "/figma/chata-avatar-5.png";
-const imgAvatarExample5 = "/figma/chata-avatar-6.png";
-const imgPathStroke = "/figma/chata-header-chat.svg";
-const imgVector = "/figma/chata-header-user.svg";
-const imgVector1 = "/figma/chata-header-plus.svg";
-const imgLine1 = "/figma/chata-line1.svg";
-const imgUnion = "/figma/chata-union.svg";
-const imgLine2 = "/figma/chata-line2.svg";
-const imgVector2 = "/figma/chata-vector-time.svg";
-const imgVector3 = "/figma/chata-vector-mute.svg";
-const imgVector4 = "/figma/chata-vector-pin.svg";
-const img = "/figma/chata-icon-misc.svg";
+import { asset } from "../../_lib/asset";
+
+const imgImage12 = asset("/figma/chata-image12.png");
+const imgAvatarExample = asset("/figma/chata-avatar-1.png");
+const imgAvatarExample1 = asset("/figma/chata-avatar-2.png");
+const imgAvatarExample2 = asset("/figma/chata-avatar-3.png");
+const imgAvatarExample3 = asset("/figma/chata-avatar-4.png");
+const imgAvatarExample4 = asset("/figma/chata-avatar-5.png");
+const imgAvatarExample5 = asset("/figma/chata-avatar-6.png");
+const imgPathStroke = asset("/figma/chata-header-chat.svg");
+const imgVector = asset("/figma/chata-header-user.svg");
+const imgVector1 = asset("/figma/chata-header-plus.svg");
+const imgLine1 = asset("/figma/chata-line1.svg");
+const imgUnion = asset("/figma/chata-union.svg");
+const imgLine2 = asset("/figma/chata-line2.svg");
+const imgVector2 = asset("/figma/chata-vector-time.svg");
+const imgVector3 = asset("/figma/chata-vector-mute.svg");
+const imgVector4 = asset("/figma/chata-vector-pin.svg");
+const img = asset("/figma/chata-icon-misc.svg");
 
 const FONT_SF_PRO = "font-['SF_Pro',-apple-system,'BlinkMacSystemFont','Helvetica_Neue',sans-serif]";
 const FONT_SF_PRO_MEDIUM = "font-['SF_Pro',-apple-system,'BlinkMacSystemFont','Helvetica_Neue',sans-serif]";

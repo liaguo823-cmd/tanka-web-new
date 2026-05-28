@@ -18,12 +18,13 @@
 
 import { ChevronsLeft } from "lucide-react";
 import { useMenuCollapse, WORKSPACES, type WorkspaceId } from "./MenuContext";
+import { asset } from "../../_lib/asset";
 
-const imgTankaMark = "/figma/tanka-mark.svg";
-const imgT = "/figma/t-letter.svg";
-const imgX = "/figma/org-x.svg";
-const imgPlus = "/figma/org-plus.svg";
-const imgNut = "/figma/nut.svg";
+const imgTankaMark = asset("/figma/tanka-mark.svg");
+const imgT = asset("/figma/t-letter.svg");
+const imgX = asset("/figma/org-x.svg");
+const imgPlus = asset("/figma/org-plus.svg");
+const imgNut = asset("/figma/nut.svg");
 
 const FONT_SF_PRO_MED =
   "font-['SF_Pro',-apple-system,'BlinkMacSystemFont','Helvetica_Neue',sans-serif]";

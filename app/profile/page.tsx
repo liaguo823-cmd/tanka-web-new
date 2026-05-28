@@ -18,8 +18,9 @@ import {
 } from "lucide-react";
 import OrgRail from "../chat/_components/OrgRail";
 import Menu, { ResizeHandle } from "../chat/_components/Menu";
+import { asset } from "../_lib/asset";
 
-const imgPhoto = "/figma/user-photo.png";
+const imgPhoto = asset("/figma/user-photo.png");
 
 const FONT =
   '"SF Pro", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
