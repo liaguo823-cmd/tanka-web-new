@@ -32,9 +32,17 @@ import {
   LogOut,
   ArrowRight,
 } from "lucide-react";
-import { useEffect, useRef, useState, type ComponentType } from "react";
+import { useCallback, useEffect, useRef, useState, type ComponentType } from "react";
 import { createPortal } from "react-dom";
-import { useMenuCollapse, type Workspace } from "./MenuContext";
+import {
+  useMenuCollapse,
+  MENU_WIDTH_COLLAPSED,
+  MENU_WIDTH_EXPANDED,
+  MENU_WIDTH_MIN,
+  MENU_WIDTH_MAX,
+  MENU_COLLAPSE_THRESHOLD,
+  type Workspace,
+} from "./MenuContext";
 import {
   CalendarModal,
   MemoModal,
@@ -92,16 +100,25 @@ export default function Menu() {
   const pathname = usePathname() || "/";
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
-  const {
-    collapsed,
-    toggle,
-    menuWidth,
-    setMenuWidth,
-    menuCollapsed,
-    toggleMenu,
-    activeWorkspace,
-  } = useMenuCollapse();
+  // Workspace/OrgRail state lives in context — those change rarely so
+  // the cross-component re-renders are cheap.
+  const { collapsed, toggle, activeWorkspace } = useMenuCollapse();
+
+  // Menu width is local: it ticks on every mousemove during drag,
+  // so keeping it out of the shared context prevents OrgRail and
+  // the sub-nav from re-rendering on every frame.
+  const [menuWidth, setMenuWidthRaw] = useState(MENU_WIDTH_EXPANDED);
   const [dragging, setDragging] = useState(false);
+  const menuCollapsed = menuWidth < MENU_COLLAPSE_THRESHOLD;
+  const setMenuWidth = useCallback((w: number) => {
+    if (Number.isNaN(w)) return;
+    setMenuWidthRaw(Math.max(MENU_WIDTH_MIN, Math.min(MENU_WIDTH_MAX, w)));
+  }, []);
+  const toggleMenu = useCallback(() => {
+    setMenuWidthRaw((w) =>
+      w < MENU_COLLAPSE_THRESHOLD ? MENU_WIDTH_EXPANDED : MENU_WIDTH_COLLAPSED,
+    );
+  }, []);
 
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [userMenuPos, setUserMenuPos] = useState<{ left: number; bottom: number } | null>(null);
