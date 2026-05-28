@@ -492,13 +492,13 @@ function PinnedTab({ item }: { item: PinnedItem }) {
         onMouseLeave={hide}
         onFocus={show}
         onBlur={hide}
-        className="group/pin flex items-center gap-[10px] px-[6px] h-[32px] w-full rounded-[8px] hover:bg-[#d8dfed]/50 transition-colors"
+        className="group/pin flex items-center gap-[12px] px-[6px] h-[36px] w-full rounded-[8px] hover:bg-[#d8dfed]/50 transition-colors"
       >
-        <span className="size-[20px] shrink-0 flex items-center justify-center">
-          <FileText size={16} strokeWidth={1.8} className="text-[#3b82f6]" />
+        <span className="size-[24px] shrink-0 flex items-center justify-center">
+          <FileText size={18} strokeWidth={1.8} className="text-[#3b82f6]" />
         </span>
         <span
-          className={`${FONT_SF_PRO} font-[400] text-[13px] text-[#455871] truncate flex-1 text-left`}
+          className={`${FONT_SF_PRO} font-[400] text-[15px] leading-[21px] text-[#455871] truncate flex-1 text-left`}
         >
           {item.shortName}
         </span>
