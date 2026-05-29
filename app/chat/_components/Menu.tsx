@@ -292,7 +292,11 @@ export default function Menu() {
               >
                 <WorkspaceLogo workspace={activeWorkspace} />
                 <WorkspaceNameTitle name={activeWorkspace.name} />
-                <WorkspaceMenuButton />
+                {/* Hide the chevron-dropdown when the OrgRail is
+                    collapsed — the « toggle on the left already
+                    pushes everything right, and an extra chevron on
+                    the far right pokes out of the column. */}
+                {!collapsed && <WorkspaceMenuButton />}
               </div>
             </div>
           )}
