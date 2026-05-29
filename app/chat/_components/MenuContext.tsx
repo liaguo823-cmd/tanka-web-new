@@ -26,7 +26,7 @@ import {
   type ReactNode,
 } from "react";
 
-export type WorkspaceId = "tanka" | "t" | "x";
+export type WorkspaceId = "tanka" | "t" | "x" | "studio";
 export type Workspace = {
   id: WorkspaceId;
   name: string;
@@ -38,6 +38,8 @@ export const WORKSPACES: Workspace[] = [
   { id: "tanka", name: "Tanka", unread: 3 },
   { id: "t", name: "T Team", unread: 0 },
   { id: "x", name: "X Corp", unread: 0 },
+  // Intentionally long name — exercises the Menu header's truncation.
+  { id: "studio", name: "深圳前海腾讯科技有限公司", unread: 0 },
 ];
 
 /** Layout constants for the Menu's resizable width.

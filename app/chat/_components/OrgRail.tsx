@@ -135,6 +135,14 @@ function WorkspaceTile({
         {id === "x" && (
           <img alt="" className="block w-[18px] h-[18px]" src={imgX} />
         )}
+        {id === "studio" && (
+          <span
+            className="text-white font-[600] leading-none"
+            style={{ fontSize: 14 }}
+          >
+            深
+          </span>
+        )}
       </button>
       {unread > 0 && (
         <div
@@ -214,5 +222,7 @@ function tileBgFor(id: WorkspaceId): string {
       return "bg-[#005eff]";
     case "x":
       return "bg-white";
+    case "studio":
+      return "bg-[#f97316]";
   }
 }

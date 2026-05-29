@@ -289,14 +289,15 @@ export default function Menu() {
                 </button>
               )}
               <div
-                className={`flex items-center gap-[8px] transition-transform duration-200 ease-out ${
+                className={`flex items-center gap-[8px] min-w-0 flex-1 transition-transform duration-200 ease-out ${
                   collapsed ? "group-hover/header:translate-x-[36px]" : ""
                 }`}
               >
                 <WorkspaceLogo workspace={activeWorkspace} />
                 <p
-                  className={`${FONT_SF_PRO} font-[600] leading-[25.2px] shrink-0 text-[#020617] text-[18px] whitespace-nowrap`}
+                  className={`${FONT_SF_PRO} font-[600] leading-[25.2px] text-[#020617] text-[18px] whitespace-nowrap truncate min-w-0`}
                   style={{ fontVariationSettings: "'wdth' 100" }}
+                  title={activeWorkspace.name}
                 >
                   {activeWorkspace.name}
                 </p>
@@ -724,7 +725,7 @@ function WorkspaceMenuButton() {
         onBlur={scheduleHide}
         aria-label="Workspace menu"
         aria-expanded={open}
-        className="w-[24px] h-[24px] flex items-center justify-center rounded-md text-[#455871] hover:text-[#020617] hover:bg-[#E3E8F2] transition-colors"
+        className="shrink-0 w-[24px] h-[24px] flex items-center justify-center rounded-md text-[#455871] hover:text-[#020617] hover:bg-[#E3E8F2] transition-colors"
       >
         <ChevronDown
           size={18}
@@ -1146,6 +1147,18 @@ function WorkspaceLogo({ workspace }: { workspace: Workspace }) {
     return (
       <div className="bg-[#005eff] rounded-full size-[32px] flex items-center justify-center shrink-0">
         <img alt="" className="block w-[10px] h-[13px]" src={imgT} />
+      </div>
+    );
+  }
+  if (workspace.id === "studio") {
+    return (
+      <div className="bg-[#f97316] rounded-full size-[32px] flex items-center justify-center shrink-0">
+        <span
+          className="text-white font-[600] leading-none"
+          style={{ fontSize: 14 }}
+        >
+          深
+        </span>
       </div>
     );
   }
