@@ -151,17 +151,19 @@ function SettingsRow({ row }: { row: Row }) {
       className="w-full flex items-center gap-3 px-2 py-3 rounded-[8px] hover:bg-[#eef1f7] transition-colors group"
     >
       <span className="size-9 flex items-center justify-center text-[#0f294d] shrink-0">
-        {row.icon}
+        <span className="relative inline-flex">
+          {row.icon}
+          {row.dot && (
+            <span
+              aria-hidden
+              className="absolute -top-[2px] -right-[2px] w-[7px] h-[7px] bg-[#ef4444] rounded-full ring-2 ring-white"
+            />
+          )}
+        </span>
       </span>
       <span className="flex-1 text-left text-[15px] font-medium text-[#020617]">
         {row.label}
       </span>
-      {row.dot && (
-        <span
-          aria-hidden
-          className="w-[8px] h-[8px] bg-[#ef4444] rounded-full shrink-0"
-        />
-      )}
       {row.trailing && (
         <span className="text-[13px] text-[#8793ab]">{row.trailing}</span>
       )}

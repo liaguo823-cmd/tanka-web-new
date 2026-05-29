@@ -1246,14 +1246,16 @@ function UserMenuPopup({
           onClick={onClose}
           className="w-full px-5 py-2.5 flex items-center gap-3 text-[14px] text-[#020617] hover:bg-[#f7f8fc] transition-colors"
         >
-          <Settings size={18} strokeWidth={1.6} className="text-[#455871]" />
-          <span className="flex-1">Settings</span>
-          {UPDATE_AVAILABLE && (
-            <span
-              aria-hidden
-              className="w-[8px] h-[8px] bg-[#ef4444] rounded-full shrink-0"
-            />
-          )}
+          <span className="relative shrink-0 inline-flex">
+            <Settings size={18} strokeWidth={1.6} className="text-[#455871]" />
+            {UPDATE_AVAILABLE && (
+              <span
+                aria-hidden
+                className="absolute -top-[2px] -right-[2px] w-[7px] h-[7px] bg-[#ef4444] rounded-full ring-2 ring-white"
+              />
+            )}
+          </span>
+          Settings
         </Link>
         <button
           type="button"
