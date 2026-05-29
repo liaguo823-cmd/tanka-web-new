@@ -49,6 +49,7 @@ import {
   MENU_WIDTH_MIN,
   MENU_WIDTH_MAX,
   MENU_COLLAPSE_THRESHOLD,
+  UPDATE_AVAILABLE,
   type Workspace,
 } from "./MenuContext";
 import {
@@ -452,24 +453,34 @@ export default function Menu() {
             <PanelLeftOpen size={18} strokeWidth={1.8} />
           </IconWithTooltip>
         )}
-        <IconWithTooltip
-          label="Yiran Guo"
-          refOuter={photoBtnRef}
-          onClick={() => photoBtnRef.current && openUserMenu(photoBtnRef.current)}
-          showTooltip={menuCollapsed}
-          className={`relative rounded-full shrink-0 size-[36px] overflow-hidden focus:outline-none transition-shadow duration-200 ease-out ${
-            userMenuOpen
-              ? "ring-[2px] ring-[rgba(0,94,255,0.55)] ring-offset-[3px] ring-offset-[#eef1f7]"
-              : "focus:ring-2 focus:ring-[rgba(0,94,255,0.4)]"
-          }`}
-          dataName="Photo"
-        >
-          <img
-            alt=""
-            className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-full size-full"
-            src={imgPhoto}
-          />
-        </IconWithTooltip>
+        <div className="relative shrink-0">
+          <IconWithTooltip
+            label="Yiran Guo"
+            refOuter={photoBtnRef}
+            onClick={() => photoBtnRef.current && openUserMenu(photoBtnRef.current)}
+            showTooltip={menuCollapsed}
+            className={`relative rounded-full shrink-0 size-[36px] overflow-hidden focus:outline-none transition-shadow duration-200 ease-out ${
+              userMenuOpen
+                ? "ring-[2px] ring-[rgba(0,94,255,0.55)] ring-offset-[3px] ring-offset-[#eef1f7]"
+                : "focus:ring-2 focus:ring-[rgba(0,94,255,0.4)]"
+            }`}
+            dataName="Photo"
+          >
+            <img
+              alt=""
+              className="absolute inset-0 max-w-none object-cover pointer-events-none rounded-full size-full"
+              src={imgPhoto}
+            />
+          </IconWithTooltip>
+          {/* App-update notification dot. Lives outside the button so
+              it isn't clipped by the photo's overflow-hidden. */}
+          {UPDATE_AVAILABLE && (
+            <span
+              aria-hidden
+              className="absolute top-0 right-0 w-[10px] h-[10px] bg-[#ef4444] rounded-full ring-2 ring-[#eef1f7] pointer-events-none"
+            />
+          )}
+        </div>
         {!menuCollapsed && (
           <button
             ref={foldBtnRef}
@@ -1236,7 +1247,13 @@ function UserMenuPopup({
           className="w-full px-5 py-2.5 flex items-center gap-3 text-[14px] text-[#020617] hover:bg-[#f7f8fc] transition-colors"
         >
           <Settings size={18} strokeWidth={1.6} className="text-[#455871]" />
-          Settings
+          <span className="flex-1">Settings</span>
+          {UPDATE_AVAILABLE && (
+            <span
+              aria-hidden
+              className="w-[8px] h-[8px] bg-[#ef4444] rounded-full shrink-0"
+            />
+          )}
         </Link>
         <button
           type="button"

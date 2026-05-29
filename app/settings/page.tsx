@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import OrgRail from "../chat/_components/OrgRail";
 import Menu, { ResizeHandle } from "../chat/_components/Menu";
+import { UPDATE_AVAILABLE } from "../chat/_components/MenuContext";
 
 const FONT =
   '"SF Pro", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
@@ -32,6 +33,9 @@ type Row = {
   icon: React.ReactNode;
   label: string;
   trailing?: string;
+  /** When true, show a small red notification dot on this row (used
+   *  for "Check for Updates" when a new app version is available). */
+  dot?: boolean;
 };
 
 const ROWS: Row[] = [
@@ -41,7 +45,7 @@ const ROWS: Row[] = [
   { icon: <Pencil size={18} strokeWidth={1.6} />, label: "Appearance" },
   { icon: <Sparkles size={18} strokeWidth={1.6} />, label: "AI Settings" },
   { icon: <LifeBuoy size={18} strokeWidth={1.6} />, label: "Support" },
-  { icon: <ArrowUpCircle size={18} strokeWidth={1.6} />, label: "Check for Updates" },
+  { icon: <ArrowUpCircle size={18} strokeWidth={1.6} />, label: "Check for Updates", dot: UPDATE_AVAILABLE },
   { icon: <Info size={18} strokeWidth={1.6} />, label: "About", trailing: "Version 1.6.7" },
 ];
 
@@ -152,6 +156,12 @@ function SettingsRow({ row }: { row: Row }) {
       <span className="flex-1 text-left text-[15px] font-medium text-[#020617]">
         {row.label}
       </span>
+      {row.dot && (
+        <span
+          aria-hidden
+          className="w-[8px] h-[8px] bg-[#ef4444] rounded-full shrink-0"
+        />
+      )}
       {row.trailing && (
         <span className="text-[13px] text-[#8793ab]">{row.trailing}</span>
       )}

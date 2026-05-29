@@ -42,6 +42,11 @@ export const WORKSPACES: Workspace[] = [
   { id: "studio", name: "Brightwater Cooperative Studios", unread: 0 },
 ];
 
+/** Whether a new app version is available. Drives the small red
+ *  notification dots on the user photo button, the user-menu
+ *  Settings row, and the Settings page's "Check for Updates" row. */
+export const UPDATE_AVAILABLE = true;
+
 /** Layout constants for the Menu's resizable width.
  *
  *  The drag is snap-based, not free-form, because intermediate widths
