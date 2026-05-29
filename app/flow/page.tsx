@@ -489,11 +489,11 @@ function FlowDetail({ item }: { item: FlowItem }) {
         </div>
       </div>
 
-      {/* Composer */}
-      <div className="shrink-0 px-8 pb-6 pt-2">
-        <div className="max-w-[760px] mx-auto">
-          <div className="rounded-[14px] bg-white border border-[#e7ebf8] shadow-[0_2px_8px_rgba(15,41,77,0.04)]">
-            <div className="px-4 pt-3 pb-2">
+      {/* Composer — matches Chat page's 1080px cap + 180px height. */}
+      <div className="shrink-0 px-8 pb-6 pt-2 flex justify-center">
+        <div className="w-full max-w-[1080px]">
+          <div className="h-[180px] rounded-[14px] bg-white border border-[#e7ebf8] shadow-[0_2px_8px_rgba(15,41,77,0.04)] flex flex-col">
+            <div className="px-4 pt-3 pb-2 flex-1 min-h-0">
               <input
                 type="text"
                 value={draft}
@@ -502,7 +502,7 @@ function FlowDetail({ item }: { item: FlowItem }) {
                 className="w-full bg-transparent outline-none text-[14px] text-[#020617] placeholder:text-[#8793ab]"
               />
             </div>
-            <div className="px-3 pb-2 flex items-center justify-between">
+            <div className="px-3 pb-2 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-1.5">
                 <button type="button" className="w-7 h-7 flex items-center justify-center text-[#8793ab] hover:text-[#020617]" aria-label="Add">
                   <Plus size={16} strokeWidth={1.8} />
