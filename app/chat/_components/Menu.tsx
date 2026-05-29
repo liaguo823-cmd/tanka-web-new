@@ -135,9 +135,6 @@ const APPS_NAV: NavItem[] = [
 /* ---------------------------------------------------------------------- */
 
 const STORAGE_KEY = "tanka:menuWidth";
-let _menuWidth: number = MENU_WIDTH_EXPANDED;
-let _hydrated = false;
-const _subscribers = new Set<() => void>();
 
 function _readStored(): number {
   if (typeof window === "undefined") return MENU_WIDTH_EXPANDED;
@@ -146,6 +143,14 @@ function _readStored(): number {
   const n = Number(raw);
   return Number.isFinite(n) ? n : MENU_WIDTH_EXPANDED;
 }
+
+// Hydrate the module-level width from localStorage IMMEDIATELY on the
+// client. Doing this here (not in useEffect) means every <Menu /> that
+// mounts after a navigation reads the persisted value on its very first
+// render — no brief flash to MENU_WIDTH_EXPANDED then snap to collapsed.
+let _menuWidth: number =
+  typeof window !== "undefined" ? _readStored() : MENU_WIDTH_EXPANDED;
+const _subscribers = new Set<() => void>();
 
 function _setMenuWidth(w: number) {
   _menuWidth = w;
@@ -182,22 +187,18 @@ export default function Menu() {
   // the cross-component re-renders are cheap.
   const { collapsed, toggle, activeWorkspace } = useMenuCollapse();
 
-  // Menu width is shared at the module scope (see _menuWidth above) so
-  // it survives the per-page <Menu /> remount on navigation. Mirror
-  // it into a local useState via a subscription so only this Menu
-  // instance re-renders when the width changes.
-  const [menuWidth, setMenuWidthLocal] = useState(_menuWidth);
+  // Menu width is shared at the module scope (see _menuWidth above)
+  // and hydrated from localStorage at module load on the client, so
+  // a fresh <Menu /> mount on navigation already starts at the right
+  // value. Lazy useState init ensures we don't pull a stale module
+  // value across remounts during dev HMR.
+  const [menuWidth, setMenuWidthLocal] = useState(() => _menuWidth);
   useEffect(() => {
-    // Hydrate from localStorage exactly once (avoids SSR mismatch).
-    if (!_hydrated) {
-      _hydrated = true;
-      const stored = _readStored();
-      if (stored !== _menuWidth) _setMenuWidth(stored);
-    }
-    // Sync local state with the current module value, then subscribe
-    // to future changes.
-    setMenuWidthLocal(_menuWidth);
+    // In case the module was evaluated server-side first (where
+    // localStorage isn't readable), reconcile after mount.
+    if (_menuWidth !== menuWidth) setMenuWidthLocal(_menuWidth);
     return _subscribe(() => setMenuWidthLocal(_menuWidth));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [dragging, setDragging] = useState(false);
   const menuCollapsed = menuWidth < MENU_COLLAPSE_THRESHOLD;
@@ -243,6 +244,11 @@ export default function Menu() {
         dragging ? "" : "transition-[width] duration-300 ease-out"
       }`}
       style={{ width: menuWidth }}
+      // The server renders with the default expanded width; on client
+      // the lazy useState reads localStorage and may render collapsed.
+      // suppressHydrationWarning silences React's mismatch warning
+      // since the client value is the intended source of truth.
+      suppressHydrationWarning
       data-node-id="8:10210"
       data-name="menu"
     >
