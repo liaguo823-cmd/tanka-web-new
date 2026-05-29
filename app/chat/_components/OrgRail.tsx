@@ -51,7 +51,7 @@ export default function OrgRail() {
       >
         <div className="flex flex-col items-center w-full">
           {/* 72px header — `«` toggle centered, matches Menu header. */}
-          <div className="h-[72px] w-full flex items-center justify-center shrink-0">
+          <div className="h-[60px] w-full flex items-center justify-center shrink-0">
             <button
               type="button"
               onClick={toggle}

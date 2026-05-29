@@ -59,7 +59,7 @@ function FlowList() {
   return (
     <div className="w-[376px] shrink-0 h-full bg-[#f7f8fc] flex flex-col border-r border-[#e7ebf8]">
       {/* Title bar */}
-      <div className="h-[72px] shrink-0 flex items-center justify-between px-[15px] border-b border-[#e7ebf8]">
+      <div className="h-[60px] shrink-0 flex items-center justify-between px-[15px] border-b border-[#e7ebf8]">
         <h2 className="text-[18px] font-semibold text-[#020617] leading-[22.4px]">
           Flow
         </h2>
@@ -160,7 +160,7 @@ function FlowDetail() {
   return (
     <div className="flex-1 min-w-0 h-full flex flex-col bg-[#f7f8fc]">
       {/* Header */}
-      <header className="h-[72px] shrink-0 flex items-center px-6 border-b border-[#e7ebf8] bg-[#f7f8fc]">
+      <header className="h-[60px] shrink-0 flex items-center px-6 border-b border-[#e7ebf8] bg-[#f7f8fc]">
         <button type="button" className="w-8 h-8 flex items-center justify-center text-[#455871] hover:text-[#020617] -ml-2" aria-label="Back">
           <ArrowLeft size={18} strokeWidth={1.8} />
         </button>

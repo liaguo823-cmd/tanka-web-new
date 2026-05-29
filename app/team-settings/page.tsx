@@ -107,7 +107,7 @@ function TeamSettingsSidebar({
       }`}
       style={{ width }}
     >
-      <div className="h-[72px] shrink-0 flex items-center px-[15px] border-b border-[#e7ebf8]">
+      <div className="h-[60px] shrink-0 flex items-center px-[15px] border-b border-[#e7ebf8]">
         <h2 className="text-[18px] font-semibold text-[#020617] leading-[22.4px] tracking-tight">
           Team Settings
         </h2>

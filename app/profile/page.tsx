@@ -183,7 +183,7 @@ function ProfileHero() {
   return (
     <div className="flex-1 min-w-0 h-full flex flex-col bg-[#f7f8fc] relative overflow-hidden">
       {/* Header strip */}
-      <header className="h-[72px] shrink-0 flex items-center px-8 border-b border-[#e7ebf8]">
+      <header className="h-[60px] shrink-0 flex items-center px-8 border-b border-[#e7ebf8]">
         <h1 className="text-[15px] font-medium text-[#020617]">Leverage Dashboard</h1>
       </header>
 

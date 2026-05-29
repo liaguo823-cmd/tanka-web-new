@@ -32,7 +32,7 @@ const imgVector9 = asset("/figma/chatc-send-icon.svg");
 export default function ChatC() {
   return (
     <div className="bg-[#f7f8fc] content-stretch flex flex-col items-center justify-between relative size-full flex-1 min-w-0 h-full" data-node-id="3:8045" data-name="ChatC">
-      <div className="bg-[#f7f8fc] border-[#e7ebf8] border-b border-solid content-stretch flex gap-[9px] h-[72px] items-center min-h-[44px] pb-[3.5px] pt-[3px] px-[15px] relative shrink-0 w-full" data-node-id="3:8046" data-name="Title_2025">
+      <div className="bg-[#f7f8fc] border-[#e7ebf8] border-b border-solid content-stretch flex gap-[9px] h-[60px] items-center min-h-[44px] pb-[3.5px] pt-[3px] px-[15px] relative shrink-0 w-full" data-node-id="3:8046" data-name="Title_2025">
         <div className="flex-[1_0_0] min-w-px relative" data-node-id="I3:8046;1149:2198" data-name="middle">
           <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[9px] items-center relative size-full">
             <div className="relative shrink-0 size-[28px]" data-node-id="I3:8046;1149:2199" data-name="Type=Group">

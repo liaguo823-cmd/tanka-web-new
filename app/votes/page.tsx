@@ -68,7 +68,7 @@ export default function VotesPage() {
       <Menu />
       <div className="flex-1 min-w-0 h-full flex flex-col bg-[#f7f8fc]">
         {/* Header */}
-        <header className="h-[72px] shrink-0 flex items-center px-6 border-b border-[#e7ebf8] gap-4">
+        <header className="h-[60px] shrink-0 flex items-center px-6 border-b border-[#e7ebf8] gap-4">
           <h1 className="text-[18px] font-semibold text-[#020617]">Votes</h1>
           <div className="flex-1 max-w-[640px] mx-auto">
             <div className="h-9 rounded-full bg-white border border-[#e7ebf8] flex items-center gap-2 px-4">

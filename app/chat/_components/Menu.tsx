@@ -251,7 +251,7 @@ export default function Menu() {
         {/* Header — 72px — shows the ACTIVE workspace's logo + name.
             When OrgRail is collapsed we also show the `«` toggle at
             the very left so the user can re-expand it. */}
-        <div className="h-[72px] shrink-0 flex items-center w-full">
+        <div className="h-[60px] shrink-0 flex items-center w-full">
           {menuCollapsed ? (
             <div className="flex justify-center w-full">
               {/* Collapsed-menu workspace logo: clicking still toggles

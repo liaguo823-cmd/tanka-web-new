@@ -28,7 +28,7 @@ export default function ChatA() {
     <div className="border-[#e7ebf8] border-r border-solid content-stretch flex flex-col items-center px-[0.5px] relative w-[376px] shrink-0 h-full" data-node-id="3:7726" data-name="ChatA">
       <div className="bg-[#f7f8fc] content-stretch flex flex-col h-full min-h-0 items-start relative shrink-0 w-full" data-node-id="3:7742" data-name="Contants">
         {/* Title bar */}
-        <div className="bg-[#f7f8fc] border-[#e7ebf8] border-b border-solid content-stretch flex gap-[9px] h-[72px] items-center min-h-[44px] pb-[3.5px] pt-[3px] px-[15px] relative shrink-0 w-full" data-node-id="26:20913" data-name="Title_2025">
+        <div className="bg-[#f7f8fc] border-[#e7ebf8] border-b border-solid content-stretch flex gap-[9px] h-[60px] items-center min-h-[44px] pb-[3.5px] pt-[3px] px-[15px] relative shrink-0 w-full" data-node-id="26:20913" data-name="Title_2025">
           <div className="flex-[1_0_0] min-w-px relative" data-node-id="I26:20913;1149:2198" data-name="middle">
             <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[9px] items-center relative size-full">
               <div className="flex flex-row items-center self-stretch">

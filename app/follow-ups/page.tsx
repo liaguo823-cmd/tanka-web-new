@@ -54,7 +54,7 @@ export default function FollowUpsPage() {
       <Menu />
       <div className="flex-1 min-w-0 h-full flex flex-col bg-[#f7f8fc]">
         {/* Header */}
-        <header className="h-[72px] shrink-0 flex items-center px-6 border-b border-[#e7ebf8]">
+        <header className="h-[60px] shrink-0 flex items-center px-6 border-b border-[#e7ebf8]">
           <h1 className="text-[18px] font-semibold text-[#020617]">Follow-ups</h1>
           <button
             type="button"

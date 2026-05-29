@@ -88,7 +88,7 @@ function LinkedToolsList() {
   return (
     <div className="w-[376px] shrink-0 h-full bg-[#f7f8fc] flex flex-col border-r border-[#e7ebf8]">
       {/* Title */}
-      <div className="h-[72px] shrink-0 flex items-center px-[15px] border-b border-[#e7ebf8]">
+      <div className="h-[60px] shrink-0 flex items-center px-[15px] border-b border-[#e7ebf8]">
         <h2 className="text-[18px] font-semibold text-[#020617] leading-[22.4px]">
           Link
         </h2>
