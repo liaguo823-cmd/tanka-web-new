@@ -438,7 +438,11 @@ export default function Menu() {
           refOuter={photoBtnRef}
           onClick={() => photoBtnRef.current && openUserMenu(photoBtnRef.current)}
           showTooltip={menuCollapsed}
-          className="relative rounded-full shrink-0 size-[36px] overflow-hidden focus:outline-none focus:ring-2 focus:ring-[rgba(0,94,255,0.4)]"
+          className={`relative rounded-full shrink-0 size-[36px] overflow-hidden focus:outline-none transition-shadow duration-200 ease-out ${
+            userMenuOpen
+              ? "ring-[2px] ring-[rgba(0,94,255,0.55)] ring-offset-[3px] ring-offset-[#eef1f7]"
+              : "focus:ring-2 focus:ring-[rgba(0,94,255,0.4)]"
+          }`}
           dataName="Photo"
         >
           <img
